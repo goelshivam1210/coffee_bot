@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Distribution / packaging
+*.egg-info/
+build/
+dist/
+
+# PyBullet cache
+*.bullet
+
+# Models, logs, and temp
+models/
+logs/
+*.log
+*.tmp
+
+# PDDL generated plans
+*.txt
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python coverage
+htmlcov/
+.coverage
+
+# ROS workspaces (if used)
+devel/
+install/
+build_ws/
+
+# Config backups
+*.bak
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
