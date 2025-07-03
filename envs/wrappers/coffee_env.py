@@ -85,7 +85,10 @@ class CoffeeEnv:
         self.holding = None
 
         # Update the base environment
-        self.baseenv.place(cup_name, loc_name)
+        if self.locations[loc_name].loc_type == "coffee-machine":
+            self.baseenv.place(cup_name, loc_name, find_empty_pos=False)
+        else:
+            self.baseenv.place(cup_name, loc_name, find_empty_pos=True)
 
     def move(self, from_loc, to_loc):
         """Move the robot from one location to another."""

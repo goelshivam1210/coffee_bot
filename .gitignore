@@ -48,3 +48,5 @@ build_ws/
 # Notebook checkpoints
 .ipynb_checkpoints/
 
+# Generated simulation videos
+*.mp4

@@ -369,7 +369,7 @@ class PickPlaceEnv():
     # info = {}
     # return observation, reward, done, info
 
-  def place(self, which_object, obj_to_place):
+  def place(self, which_object, obj_to_place, find_empty_pos=False):
     """Do place motion primitive."""
 
     if 'table' in obj_to_place:
@@ -390,6 +390,42 @@ class PickPlaceEnv():
     else:
       place_xyz = place_pos
       place_xyz[2] = 0.15
+
+    # find empty position on top of the obj_to_place area if find_empty_pos is True
+    if find_empty_pos:
+      obj_pos = []
+      for objs in self.object_list:
+        if objs == obj_to_place:
+          continue
+        obj_pos.append(self.get_obj_pos(objs).copy())
+      
+      # Check if initial place_xyz is already good
+      total_objects_far = 0
+      for pos in obj_pos:
+        if np.linalg.norm(place_xyz[:2] - pos[:2]) > 0.07:
+          total_objects_far += 1
+      
+      # Only search for new position if initial one is not suitable
+      if total_objects_far != len(obj_pos):
+        num_choose_times = 0
+        while True:
+          random_empty_pos_candidate = [np.random.uniform(LOCATION_CONFIGS[obj_to_place]["position"][0] - .08, 
+                                                          LOCATION_CONFIGS[obj_to_place]["position"][0] + .08), 
+                                        np.random.uniform(LOCATION_CONFIGS[obj_to_place]["position"][1] - .10, 
+                                                          LOCATION_CONFIGS[obj_to_place]["position"][1] + .10), 
+                                        0.15]
+          total_objects_far = 0
+          for pos in obj_pos:
+            if np.linalg.norm(random_empty_pos_candidate[:2] - pos[:2]) > 0.07:
+              total_objects_far += 1
+          if total_objects_far == len(obj_pos):
+            place_xyz = np.array(random_empty_pos_candidate)
+            break 
+          num_choose_times += 1
+          if num_choose_times > 300:
+            print("cannot find empty position to place object")
+            return False
+    
 
     ee_xyz = self.get_ee_pos()
     # Move to place location.

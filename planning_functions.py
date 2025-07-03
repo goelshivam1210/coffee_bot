@@ -30,11 +30,8 @@ def format_plan_actions(plan):
     
     return formatted_plan
 
-def plan_and_parse():
+def plan_and_parse(domain_file="pddl/domain.pddl", problem_file="pddl/problem.pddl"):
     """Run a PDDL planner on domain and problem files to produce a sequence of ground actions (aka a plan)"""    
-
-    domain_file = "pddl/domain.pddl"
-    problem_file = "pddl/problem.pddl"
 
     # Check if files exist
     if not os.path.exists(domain_file):
@@ -51,10 +48,8 @@ def plan_and_parse():
     print("Formatted Plan:", parsed_plan)    
     return parsed_plan
 
-def parse_pddl_objects():
+def parse_pddl_objects(domain_file="pddl/domain.pddl", problem_file="pddl/problem.pddl"):
     """Parse PDDL files and return CUPS, LOCATIONS, and BUTTONS arrays"""
-    domain_file = "pddl/domain.pddl"
-    problem_file = "pddl/problem.pddl"
     # Create PDDL parser instance
     parser = PDDL_Parser()
     
@@ -66,6 +61,19 @@ def parse_pddl_objects():
     cups = []
     locations = []
     buttons = []
+    robot_location = None
+    
+    # Get robot location from initial state
+    for state_tuple in parser.state:
+        if len(state_tuple) == 2 and state_tuple[0] == 'robot-at':
+            robot_location = state_tuple[1]
+            break
+    
+    # If no robot location found, default to a location
+    if robot_location is None:
+        print("Warning: No robot-at predicate found. Defaulting to 'loc1'.")
+        robot_location = 'loc1'
+
     
     # Helper function to get initial state predicates for an object
     def get_object_predicates(obj_name):
@@ -89,7 +97,10 @@ def parse_pddl_objects():
                 predicates = get_object_predicates(cup_name)
                 
                 # Get location
-                location = predicates.get('location', 'loc1')  # default to loc1
+                location = predicates.get('location', None)  # default to loc1
+                if location is None:
+                    print(f"Warning: No location found for {cup_name}. Defaulting to 'loc1'.")
+                    location = 'loc1'
                 
                 # Get states (clean, empty, full)
                 is_clean = predicates.get('clean', False)
@@ -114,4 +125,4 @@ def parse_pddl_objects():
             for button_name in parser.objects[button_type]:
                 buttons.append(button_name)
     
-    return cups, locations, buttons
+    return cups, locations, buttons, robot_location

@@ -6,20 +6,22 @@ import numpy as np
 high_resolution = False
 high_frame_rate = False
 
+problem_file = "pddl/problem_scattered.pddl"
 
-CUPS, LOCATIONS, BUTTONS = parse_pddl_objects()
+CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION = parse_pddl_objects(problem_file=problem_file)
 
 print("Generated CUPS:", CUPS)
 print("Generated LOCATIONS:", LOCATIONS) 
 print("Generated BUTTONS:", BUTTONS)
+print("Generated ROBOT_LOCATION:", ROBOT_LOCATION)
 
 
 baseenv = PickPlaceEnv(render=True, high_res=high_resolution, high_frame_rate=high_frame_rate)
-env = CoffeeEnv(baseenv, CUPS, LOCATIONS, "loc2", True)
+env = CoffeeEnv(baseenv, CUPS, LOCATIONS, ROBOT_LOCATION, True)
 
 
 
-parsed_plan = plan_and_parse()
+parsed_plan = plan_and_parse(problem_file=problem_file)
 print("parsed plan:: ", parsed_plan)
 
 
