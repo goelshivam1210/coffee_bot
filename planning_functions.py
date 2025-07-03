@@ -5,6 +5,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts', 'pddl-parser'))
 
 from pddl_parser.planner import Planner
+from pddl_parser.PDDL import PDDL_Parser
 
 def run_pddl_planner(domain_file, problem_file):
     """Run the PDDL parser planner and return the plan"""
@@ -49,3 +50,68 @@ def plan_and_parse():
     parsed_plan = format_plan_actions(plan)
     print("Formatted Plan:", parsed_plan)    
     return parsed_plan
+
+def parse_pddl_objects():
+    """Parse PDDL files and return CUPS, LOCATIONS, and BUTTONS arrays"""
+    domain_file = "pddl/domain.pddl"
+    problem_file = "pddl/problem.pddl"
+    # Create PDDL parser instance
+    parser = PDDL_Parser()
+    
+    # Parse domain and problem files
+    parser.parse_domain(domain_file)
+    parser.parse_problem(problem_file)
+    
+    # Initialize arrays
+    cups = []
+    locations = []
+    buttons = []
+    
+    # Helper function to get initial state predicates for an object
+    def get_object_predicates(obj_name):
+        predicates = {}
+        for state_tuple in parser.state:
+            if len(state_tuple) >= 2:
+                if state_tuple[0] == 'clean' and state_tuple[1] == obj_name:
+                    predicates['clean'] = True
+                elif state_tuple[0] == 'empty' and state_tuple[1] == obj_name:
+                    predicates['empty'] = True
+                elif state_tuple[0] == 'full' and state_tuple[1] == obj_name:
+                    predicates['full'] = True
+                elif state_tuple[0] == 'at' and len(state_tuple) == 3 and state_tuple[1] == obj_name:
+                    predicates['location'] = state_tuple[2]
+        return predicates
+    
+    # Process cups
+    for cup_type in ['espresso-cup', 'cappuccino-cup', 'americano-cup']:
+        if cup_type in parser.objects:
+            for cup_name in parser.objects[cup_type]:
+                predicates = get_object_predicates(cup_name)
+                
+                # Get location
+                location = predicates.get('location', 'loc1')  # default to loc1
+                
+                # Get states (clean, empty, full)
+                is_clean = predicates.get('clean', False)
+                is_empty = predicates.get('empty', True)  # default to empty
+                is_full = predicates.get('full', False)
+                
+                # Format: 'type name location clean empty full'
+                cup_entry = f"{cup_type} {cup_name} {location} {is_clean} {is_empty} {is_full}"
+                cups.append(cup_entry)
+    
+    # Process locations
+    for location_type in ['dirty-area', 'clean-area', 'coffee-machine', 'serving-counter']:
+        if location_type in parser.objects:
+            for location_name in parser.objects[location_type]:
+                # Format: 'type name'
+                location_entry = f"{location_type} {location_name}"
+                locations.append(location_entry)
+    
+    # Process buttons
+    for button_type in ['espresso-button', 'cappuccino-button', 'americano-button']:
+        if button_type in parser.objects:
+            for button_name in parser.objects[button_type]:
+                buttons.append(button_name)
+    
+    return cups, locations, buttons

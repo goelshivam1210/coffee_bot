@@ -59,6 +59,7 @@ domain-repo/
 ├── envs/               # Custom Gym/PyBullet environments
 |   ├── simulation
 |       ├── env.py
+|       ├── gripper.py
 |       ├── bowl        # Contains urdf for bowl
 |       ├── robotiq-2f-85
 |       └── ur5e

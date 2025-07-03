@@ -1,4 +1,4 @@
-from planning_functions import plan_and_parse
+from planning_functions import plan_and_parse, parse_pddl_objects
 from envs.simulation.env import PickPlaceEnv
 from envs.wrappers.coffee_env import CoffeeEnv
 import numpy as np
@@ -6,12 +6,12 @@ import numpy as np
 high_resolution = False
 high_frame_rate = False
 
-# Create espresso-cup cappuccino-cup americano-cup
-CUPS = ['espresso-cup esp-cup1 loc1 False True False', 'cappuccino-cup cap-cup1 loc2 True True False', 'americano-cup amer-cup1 loc2 True True False']
-# Create locations: loc1 loc2 loc3 loc4
-LOCATIONS = ['dirty-area loc1', 'clean-area loc2', 'coffee-machine loc3', 'serving-counter loc4']
-# Create buttons on coffee machine: esp-btn cap-btn amer-btn
-BUTTONS = ['esp-btn', 'cap-btn', 'amer-btn']
+
+CUPS, LOCATIONS, BUTTONS = parse_pddl_objects()
+
+print("Generated CUPS:", CUPS)
+print("Generated LOCATIONS:", LOCATIONS) 
+print("Generated BUTTONS:", BUTTONS)
 
 
 baseenv = PickPlaceEnv(render=True, high_res=high_resolution, high_frame_rate=high_frame_rate)
@@ -52,3 +52,6 @@ for individual_operator in parsed_plan:
     cup_name = individual_operator.split(' ')[2].lower()
     cm_location = individual_operator.split(' ')[3].lower()
     env.press_americano_button(button_name, cup_name, cm_location)
+
+# Save video of simulation
+baseenv.save_video("my_simulation.mp4")

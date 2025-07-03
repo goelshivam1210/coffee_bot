@@ -1,30 +1,10 @@
 import os
 import pybullet
 import pybullet_data
-import numpy as np
-import threading
-import copy
 import cv2
-from time import sleep
-import sys
+import numpy as np
 from utils.transform_utils import correct_quaternion_ignore_roll
-    
-# COLORS = {
-#     'orange': (242/255, 142/255,  43/255, 255/255),
-#     'pink':   (255/255, 157/255, 167/255, 255/255),
-#     'cyan':   (118/255, 183/255, 178/255, 255/255),
-#     'brown':  (156/255, 117/255,  95/255, 255/255),
-#     'gray':   (186/255, 176/255, 172/255, 255/255),
-#     'red':    (255/255,  87/255,  89/255, 255/255),
-#     'blue1':  (65/255,  110/255, 180/255, 255/255),
-#     'purple1': (180/255, 115/255, 155/255, 255/255),
-#     'yellow1': (240/255, 190/255,  65/255, 255/255),
-#     'green1':  (89/255,  169/255,  79/255, 255/255),
-#     'blue2':   (78/255,  121/255, 167/255, 255/255),
-#     'yellow2': (237/255, 201/255,  72/255, 255/255),
-#     'purple2': (176/255, 122/255, 161/255, 255/255),
-#     'green2':  (80/255,  180/255,  70/255, 255/255),
-# }
+from envs.simulation.gripper import Robotiq2F85
 
 COLORS = {
     'red':    (255/255,  87/255,  89/255, 255/255),
@@ -59,8 +39,6 @@ BUTTON_CONFIGS = {
 
 LOCATION_CONFIGS = {
     'loc3': {'type': 'coffee-machine', 'position': (0, -0.7, 0), 'color': 'coffee_machine'},
-
-
     'loc1': {'type': 'dirty-area', 'position': (-0.2, -0.35, 0), 'color': 'red'},      # Left third
     'loc2': {'type': 'clean-area', 'position': (0, -0.35, 0), 'color': 'green1'},      # Middle third  
     'loc4': {'type': 'serving-counter', 'position': (0.2, -0.35, 0), 'color': 'silver'}, # Right third
@@ -78,128 +56,9 @@ CORNER_POS = {
   'bottom right corner': (0.3 - 0.05,  -0.8 + 0.05, 0),
 }
 
-# ALL_BLOCKS = ['blue block', 'red block', 'green block', 'orange block', 'yellow block', 'purple block', 'pink block', 'cyan block', 'brown block', 'gray block']
-# ALL_BOWLS = ['blue bowl', 'red bowl', 'green bowl', 'orange bowl', 'yellow bowl', 'purple bowl', 'pink bowl', 'cyan bowl', 'brown bowl', 'gray bowl']
-
-
-
-
 PIXEL_SIZE = 0.00267857
 BOUNDS = np.float32([[-0.3, 0.3], [-0.8, -0.2], [0, 0.15]])  # X Y Z
 
-
-
-
-# Gripper (Robotiq 2F85) code
-
-class Robotiq2F85:
-  """Gripper handling for Robotiq 2F85."""
-
-  def __init__(self, robot, tool):
-    self.robot = robot
-    self.tool = tool
-    pos = [0.1339999999999999, -0.49199999999872496, 0.5]
-    rot = pybullet.getQuaternionFromEuler([np.pi, 0, np.pi])
-    urdf = 'envs/simulation/robotiq_2f_85/robotiq_2f_85.urdf'
-    self.body = pybullet.loadURDF(urdf, pos, rot)
-    self.n_joints = pybullet.getNumJoints(self.body)
-    self.activated = False
-
-    # Connect gripper base to robot tool.
-    pybullet.createConstraint(self.robot, tool, self.body, 0, jointType=pybullet.JOINT_FIXED, jointAxis=[0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=[0, 0, -0.07], childFrameOrientation=pybullet.getQuaternionFromEuler([0, 0, np.pi / 2]))
-
-    # Set friction coefficients for gripper fingers.
-    for i in range(pybullet.getNumJoints(self.body)):
-      pybullet.changeDynamics(self.body, i, lateralFriction=10.0, spinningFriction=1.0, rollingFriction=1.0, frictionAnchor=True)
-
-    # Start thread to handle additional gripper constraints.
-    self.motor_joint = 1
-    self.constraints_thread = threading.Thread(target=self.step)
-    self.constraints_thread.daemon = True
-    self.constraints_thread.start()
-
-  # Control joint positions by enforcing hard contraints on gripper behavior.
-  # Set one joint as the open/close motor joint (other joints should mimic).
-  def step(self):
-    while True:
-      try:
-        currj = [pybullet.getJointState(self.body, i)[0] for i in range(self.n_joints)]
-        indj = [6, 3, 8, 5, 10]
-        targj = [currj[1], -currj[1], -currj[1], currj[1], currj[1]]
-        pybullet.setJointMotorControlArray(self.body, indj, pybullet.POSITION_CONTROL, targj, positionGains=np.ones(5))
-      except:
-        return
-      sleep(0.001)
-
-  # Close gripper fingers.
-  def activate(self):
-    pybullet.setJointMotorControl2(self.body, self.motor_joint, pybullet.VELOCITY_CONTROL, targetVelocity=1, force=10)
-    self.activated = True
-
-  # Open gripper fingers.
-  def release(self):
-    pybullet.setJointMotorControl2(self.body, self.motor_joint, pybullet.VELOCITY_CONTROL, targetVelocity=-1, force=10)
-    self.activated = False
-
-  # If activated and object in gripper: check object contact.
-  # If activated and nothing in gripper: check gripper contact.
-  # If released: check proximity to surface (disabled).
-  def detect_contact(self):
-    obj, _, ray_frac = self.check_proximity()
-    if self.activated:
-      empty = self.grasp_width() < 0.01
-      cbody = self.body if empty else obj
-      if obj == self.body or obj == 0:
-        return False
-      return self.external_contact(cbody)
-  #   else:
-  #     return ray_frac < 0.14 or self.external_contact()
-
-  def check_if_gripper_empty(self):
-    if self.activated == False:
-      return True
-    elif self.activated:
-      empty = self.grasp_width() < 0.01
-      if empty:
-        return True
-      else:
-        return False
-
-  # Return if body is in contact with something other than gripper
-  def external_contact(self, body=None):
-    if body is None:
-      body = self.body
-    pts = pybullet.getContactPoints(bodyA=body)
-    pts = [pt for pt in pts if pt[2] != self.body]
-    return len(pts) > 0  # pylint: disable=g-explicit-length-test
-
-  def check_grasp(self):
-    while self.moving():
-      sleep(0.001)
-    success = self.grasp_width() > 0.01
-    return success
-
-  def moving(self):
-    """Check if gripper is currently moving"""
-    # Check if motor joint is still moving by looking at joint velocity
-    joint_state = pybullet.getJointState(self.body, self.motor_joint)
-    joint_velocity = abs(joint_state[1])  # velocity is the second element
-    return joint_velocity > 0.01  # threshold for considering it moving
-
-  def grasp_width(self):
-    lpad = np.array(pybullet.getLinkState(self.body, 4)[0])
-    rpad = np.array(pybullet.getLinkState(self.body, 9)[0])
-    dist = np.linalg.norm(lpad - rpad) - 0.047813
-    return dist
-
-  def check_proximity(self):
-    ee_pos = np.array(pybullet.getLinkState(self.robot, self.tool)[0])
-    tool_pos = np.array(pybullet.getLinkState(self.body, 0)[0])
-    vec = (tool_pos - ee_pos) / np.linalg.norm((tool_pos - ee_pos))
-    ee_targ = ee_pos + vec
-    ray_data = pybullet.rayTest(ee_pos, ee_targ)[0]
-    obj, link, ray_frac = ray_data[0], ray_data[1], ray_data[2]
-    return obj, link, ray_frac
 
 # Gym-style environment code
 
@@ -1059,4 +918,35 @@ class PickPlaceEnv():
       self.step_sim_and_render()
     
     print(f"Successfully pressed button {button_name}")
+    return True
+  
+  def save_video(self, filename="simulation_video.mp4", fps=32):
+    """
+    Save the cached video frames to a video file
+    
+    Args:
+        filename: Output video filename (should end with .mp4, .avi, etc.)
+        fps: Frames per second for the output video
+    """
+    if not self.cache_video:
+        print("No video frames cached. Make sure rendering is enabled.")
+        return False
+    
+    # Get video dimensions from first frame
+    height, width, channels = self.cache_video[0].shape
+    
+    # Define the codec and create VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # You can also use 'XVID'
+    out = cv2.VideoWriter(filename, fourcc, fps, (width, height))
+    
+    # Write each frame to the video file
+    for frame in self.cache_video:
+        # Convert RGB to BGR for OpenCV
+        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        out.write(frame_bgr)
+    
+    # Release the VideoWriter
+    out.release()
+    
+    print(f"Video saved as {filename} with {len(self.cache_video)} frames")
     return True
