@@ -1,3 +1,5 @@
+; Will not have a solution
+
 (define (problem no-clean-cups)
   (:domain coffee-making)
   
