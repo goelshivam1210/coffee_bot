@@ -1,5 +1,5 @@
-from coffee_env import CoffeeEnv
-from env import PickPlaceEnv
+from envs.wrappers.coffee_env import CoffeeEnv
+from envs.simulation.env import PickPlaceEnv
 import numpy as np
 
 high_resolution = False

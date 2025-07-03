@@ -2,7 +2,7 @@ import sys
 import os
 
 # Add the pddl-parser directory to the Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'knowledge', 'pddl-parser'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts', 'pddl-parser'))
 
 from pddl_parser.planner import Planner
 
@@ -32,8 +32,8 @@ def format_plan_actions(plan):
 def plan_and_parse():
     """Run a PDDL planner on domain and problem files to produce a sequence of ground actions (aka a plan)"""    
 
-    domain_file = "knowledge/PDDL/domain.pddl"
-    problem_file = "knowledge/PDDL/problem.pddl"
+    domain_file = "pddl/domain.pddl"
+    problem_file = "pddl/problem.pddl"
 
     # Check if files exist
     if not os.path.exists(domain_file):

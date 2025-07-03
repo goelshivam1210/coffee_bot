@@ -100,7 +100,7 @@ class Robotiq2F85:
     self.tool = tool
     pos = [0.1339999999999999, -0.49199999999872496, 0.5]
     rot = pybullet.getQuaternionFromEuler([np.pi, 0, np.pi])
-    urdf = 'environment/simulation/robotiq_2f_85/robotiq_2f_85.urdf'
+    urdf = 'envs/simulation/robotiq_2f_85/robotiq_2f_85.urdf'
     self.body = pybullet.loadURDF(urdf, pos, rot)
     self.n_joints = pybullet.getNumJoints(self.body)
     self.activated = False
@@ -248,8 +248,8 @@ class PickPlaceEnv():
 
     # Add robot.
     pybullet.loadURDF("plane.urdf", [0, 0, -0.001])
-    self.robot_id = pybullet.loadURDF("environment/simulation/ur5e/ur5e.urdf", [0, 0, 0], flags=pybullet.URDF_USE_MATERIAL_COLORS_FROM_MTL)
-    self.ghost_id = pybullet.loadURDF("environment/simulation/ur5e/ur5e.urdf", [0, 0, -10])  # For forward kinematics.
+    self.robot_id = pybullet.loadURDF("envs/simulation/ur5e/ur5e.urdf", [0, 0, 0], flags=pybullet.URDF_USE_MATERIAL_COLORS_FROM_MTL)
+    self.ghost_id = pybullet.loadURDF("envs/simulation/ur5e/ur5e.urdf", [0, 0, -10])  # For forward kinematics.
     self.joint_ids = [pybullet.getJointInfo(self.robot_id, i) for i in range(pybullet.getNumJoints(self.robot_id))]
     self.joint_ids = [j[0] for j in self.joint_ids if j[2] == pybullet.JOINT_REVOLUTE]
 

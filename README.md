@@ -57,7 +57,16 @@ pip install -r requirements.txt
 ```text
 domain-repo/
 ├── envs/               # Custom Gym/PyBullet environments
+|   ├── simulation
+|       ├── env.py
+|       ├── bowl        # Contains urdf for bowl
+|       ├── robotiq-2f-85
+|       └── ur5e
+|   └── wrappers
+|       └── coffee_env.py
 ├── pddl/               # PDDL domain & problem files
+|   ├── domain.pddl
+|   └── problem.pddl
 ├── planner/            # Planning interfaces & wrappers
 ├── sim/                # Simulation launch scripts & utilities
 ├── agents/             # Execution logic & agent controllers
@@ -158,6 +167,6 @@ pytest tests/
 
 ## Contact
 
-Sam Sherman sam.sherman@tufts.edu
+Sam Sherman samuel.sherman@tufts.edu
 Shivam Goel shivam.goel@tufts.edu
 

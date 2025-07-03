@@ -1,6 +1,6 @@
 from planning_functions import plan_and_parse
-from environment.simulation.env import PickPlaceEnv
-from environment.coffee_env import CoffeeEnv
+from envs.simulation.env import PickPlaceEnv
+from envs.wrappers.coffee_env import CoffeeEnv
 import numpy as np
 
 high_resolution = False
