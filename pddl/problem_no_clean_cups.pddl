@@ -1,11 +1,10 @@
-; Will not have a solution
-
 (define (problem no-clean-cups)
   (:domain coffee-making)
   
   (:objects
     cap-cup1 - cappuccino-cup
     cap-btn - cappuccino-button
+    clean-btn - cleaning-button
     
     loc1 - dirty-area
     loc2 - clean-area
@@ -16,6 +15,7 @@
   (:init
     ;; Only dirty cups available - should be unsolvable
     (empty cap-cup1)
+    (dirty cap-cup1)  ; cup is dirty
     (at cap-cup1 loc1)  ; dirty cup at dirty area (not clean)
     
     ;; Robot initial state

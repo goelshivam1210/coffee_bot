@@ -86,6 +86,8 @@ def parse_pddl_objects(domain_file="pddl/domain.pddl", problem_file="pddl/proble
                     predicates['empty'] = True
                 elif state_tuple[0] == 'full' and state_tuple[1] == obj_name:
                     predicates['full'] = True
+                elif state_tuple[0] == 'dirty' and state_tuple[1] == obj_name:
+                    predicates['dirty'] = True
                 elif state_tuple[0] == 'at' and len(state_tuple) == 3 and state_tuple[1] == obj_name:
                     predicates['location'] = state_tuple[2]
         return predicates
@@ -106,9 +108,10 @@ def parse_pddl_objects(domain_file="pddl/domain.pddl", problem_file="pddl/proble
                 is_clean = predicates.get('clean', False)
                 is_empty = predicates.get('empty', True)  # default to empty
                 is_full = predicates.get('full', False)
-                
-                # Format: 'type name location clean empty full'
-                cup_entry = f"{cup_type} {cup_name} {location} {is_clean} {is_empty} {is_full}"
+                is_dirty = predicates.get('dirty', False)
+
+                # Format: 'type name location clean empty full dirty'
+                cup_entry = f"{cup_type} {cup_name} {location} {is_clean} {is_empty} {is_full} {is_dirty}"
                 cups.append(cup_entry)
     
     # Process locations

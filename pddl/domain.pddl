@@ -5,7 +5,7 @@
     ;; Cup subtypes
     espresso-cup cappuccino-cup americano-cup - cup
     ;; Button subtypes  
-    espresso-button cappuccino-button americano-button - button
+    espresso-button cappuccino-button americano-button cleaning-button - button
     ;; Location subtypes
     dirty-area clean-area coffee-machine serving-counter - location
   )
@@ -15,6 +15,7 @@
     (clean ?c - cup)
     (empty ?c - cup)  ; dirty/used but empty
     (full ?c - cup)
+    (dirty ?c - cup)  ; explicitly dirty state
     
     ;; Location properties
     (at ?c - cup ?l - location)
@@ -63,6 +64,36 @@
     :effect (and
       (not (robot-at ?from))
       (robot-at ?to)
+    )
+  )
+  
+  ;; Press cleaning button - cleans one cup at a time
+  (:action press-cleaning-button
+    :parameters (?b - cleaning-button ?c - cup ?da - dirty-area)
+    :precondition (and
+      (at ?c ?da)
+      (robot-at ?da)
+      (dirty ?c)
+      (empty ?c)
+    )
+    :effect (and
+      (not (dirty ?c))
+      (clean ?c)
+    )
+  )
+  
+  ;; Move cleaned cup to clean area
+  (:action move-cleaned-cup
+    :parameters (?c - cup ?da - dirty-area ?ca - clean-area)
+    :precondition (and
+      (at ?c ?da)
+      (robot-at ?da)
+      (clean ?c)
+      (empty ?c)
+    )
+    :effect (and
+      (not (at ?c ?da))
+      (at ?c ?ca)
     )
   )
   

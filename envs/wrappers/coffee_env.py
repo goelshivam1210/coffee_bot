@@ -8,6 +8,7 @@ class Cup:
         self.cup_clean = cup_info[3] == "True"
         self.cup_empty = cup_info[4] == "True"
         self.cup_full = cup_info[5] == "True"
+        self.dirty = cup_info[6] == "True"
 
     def __str__(self):
         return f"{self.cup_type} {self.cup_name} {self.cup_loc}"
@@ -32,7 +33,7 @@ class CoffeeEnv:
 
         self.baseenv = baseenv
         #need to make object list a list of cups: "CUP_TYPE CUP_NAME CUP_POS" and locations
-        self.object_list = [str(cup) for cup in self.cups.values()] + [str(loc) for loc in self.locations.values()] + ["esp-btn", "cap-btn", "amer-btn"]
+        self.object_list = [str(cup) for cup in self.cups.values()] + [str(loc) for loc in self.locations.values()] + ["esp-btn", "cap-btn", "amer-btn", "clean-btn"]
         _ = self.baseenv.reset(self.object_list)
 
     def at(self, cup_name, loc_name):
@@ -124,6 +125,7 @@ class CoffeeEnv:
 
         # Update the base environment
         self.baseenv.press_button(button_name)
+        self.baseenv.change_color(cup_name, "brown")
 
     def press_cappuccino_button(self, button_name, cup_name, cm_location):
         """Press the cappuccino button on the coffee machine."""
@@ -146,6 +148,7 @@ class CoffeeEnv:
 
         # Update the base environment
         self.baseenv.press_button(button_name)
+        self.baseenv.change_color(cup_name, "white")
 
     def press_americano_button(self, button_name, cup_name, cm_location):
         """Press the americano button on the coffee machine."""
@@ -168,3 +171,26 @@ class CoffeeEnv:
 
         # Update the base environment
         self.baseenv.press_button(button_name)
+        self.baseenv.change_color(cup_name, "black")
+
+    def press_cleaning_button(self, button_name, cup_name, location):
+        """Press cleaning button"""
+        # Preconditions
+        if self.cups[cup_name].cup_loc != location:
+            raise ValueError(f"Cannot press cleaning button: cup {cup_name} is not at {location}.")
+        if self.robot_loc != location:
+            raise ValueError(f"Cannot press cleaning button: robot is not at {location}.")
+        if not self.cups[cup_name].cup_empty:
+            raise ValueError(f"Cannot press cleaning button: cup {cup_name} is not empty.")
+        if not self.cups[cup_name].dirty:
+            raise ValueError(f"Cannot press cleaning button: cup {cup_name} is not dirty.")
+        if button_name != "clean-btn":
+            raise ValueError(f"Cannot press {button_name}: not the cleaning button.")
+        # Effects
+        self.cups[cup_name].cup_clean = True
+        self.cups[cup_name].dirty = False
+
+        # Update the base environment
+        self.baseenv.press_button(button_name)
+        self.baseenv.change_color(cup_name, "silver")  # Change cup color to indicate cleaning
+        

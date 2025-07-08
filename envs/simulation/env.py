@@ -140,7 +140,7 @@ class PickPlaceEnv():
       if obj_name in LOCATION_CONFIGS:
         loc_config = LOCATION_CONFIGS[obj_name]
         position = loc_config['position']
-        
+
         # Create location area as a visual marker
         if loc_config['type'] == 'coffee-machine':
           # Coffee machine - larger box with buttons
@@ -170,6 +170,16 @@ class PickPlaceEnv():
           area_visual = pybullet.createVisualShape(pybullet.GEOM_BOX, halfExtents=[0.09, 0.12, 0.001])
           area_id = pybullet.createMultiBody(0, area_shape, area_visual, basePosition=[position[0], position[1], 0.001])
           pybullet.changeVisualShape(area_id, -1, rgbaColor=COLORS[loc_config['color']])
+          if loc_config['type'] == 'dirty-area':
+            # Create cleaning button in corner of dirty area
+            if 'clean-btn' in object_list:
+              btn_shape = pybullet.createCollisionShape(pybullet.GEOM_CYLINDER, radius=0.01, height=0.005)
+              btn_visual = pybullet.createVisualShape(pybullet.GEOM_CYLINDER, radius=0.01, length=0.005)
+              btn_id = pybullet.createMultiBody(0, btn_shape, btn_visual, 
+                                               basePosition=[position[0], position[1] - 0.1, 0.005])
+              pybullet.changeVisualShape(btn_id, -1, rgbaColor=COLORS['white'])
+              self.obj_name_to_id['clean-btn'] = btn_id
+              obj_xyz = np.concatenate((obj_xyz, np.array([position[0], position[1] + 0.05, 0.005]).reshape(1, 3)), axis=0)
         
         self.location_ids[obj_name] = area_id
         self.obj_name_to_id[obj_name] = area_id
@@ -595,10 +605,10 @@ class PickPlaceEnv():
     if not self.high_res:
       image_size = (240, 240)
       intrinsics = (120., 0, 120., 0, 120., 120., 0, 0, 1)
+      color, _, _, _, _ = self.render_image(image_size, intrinsics)
     else:
-      image_size=(360, 360)
-      intrinsics=(180., 0, 180., 0, 180., 180., 0, 0, 1)
-    color, _, _, _, _ = self.render_image(image_size, intrinsics)
+      color, _, _, _, _ = self.render_image()
+    
     return color
 
   def get_reward(self):
@@ -954,6 +964,25 @@ class PickPlaceEnv():
       self.step_sim_and_render()
     
     print(f"Successfully pressed button {button_name}")
+    return True
+  
+  def change_color(self, obj_name, color):
+    """
+    Change the color of an object in the simulation
+    
+    Args:
+        obj_name: Name of the object to change color
+        color: New color as a tuple (R, G, B) with values in [0, 255]
+    """
+    if obj_name not in self.obj_name_to_id:
+      print(f"Object {obj_name} not found")
+      return False
+    
+    obj_id = self.obj_name_to_id[obj_name]
+    if color not in COLORS:
+      print(f"Color {color} not recognized. Available colors: {list(COLORS.keys())}")
+      return False
+    pybullet.changeVisualShape(obj_id, -1, rgbaColor=COLORS[color])
     return True
   
   def save_video(self, filename="simulation_video.mp4", fps=32):

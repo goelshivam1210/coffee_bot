@@ -11,6 +11,7 @@
     esp-btn - espresso-button
     cap-btn - cappuccino-button
     amer-btn - americano-button
+    clean-btn - cleaning-button
     
     ;; Locations (with their types)
     loc1 - dirty-area
@@ -26,11 +27,13 @@
     (at cap-cup1 loc2)  ; clean cups at clean area
     
     (empty esp-cup1)    ; dirty cup
+    (dirty esp-cup1)
     (at esp-cup1 loc1)  ; dirty cups at dirty area
     
     (clean amer-cup1)
     (empty amer-cup1)
     (at amer-cup1 loc2)
+    
     
     ;; Robot initial state
     (robot-at loc2)
@@ -39,10 +42,8 @@
   
   (:goal
     (and
-      (full cap-cup1)
-      (at cap-cup1 loc4)  ; cappuccino served at counter
-      (full amer-cup1)
-      (at amer-cup1 loc4)
+      (full esp-cup1)
+      (at esp-cup1 loc4)  ; cappuccino served at counter
     )
   )
 )

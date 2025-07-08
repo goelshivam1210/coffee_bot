@@ -21,6 +21,7 @@
     (at esp-cup1 loc2)
     
     (empty esp-cup2)  ; dirty cup - unusable
+    (dirty esp-cup2)  ; cup is dirty
     (at esp-cup2 loc1)
     
     (clean cap-cup1)
