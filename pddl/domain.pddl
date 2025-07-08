@@ -83,19 +83,19 @@
   )
   
   ;; Move cleaned cup to clean area
-  (:action move-cleaned-cup
-    :parameters (?c - cup ?da - dirty-area ?ca - clean-area)
-    :precondition (and
-      (at ?c ?da)
-      (robot-at ?da)
-      (clean ?c)
-      (empty ?c)
-    )
-    :effect (and
-      (not (at ?c ?da))
-      (at ?c ?ca)
-    )
-  )
+  ;;(:action move-cleaned-cup
+  ;;  :parameters (?c - cup ?da - dirty-area ?ca - clean-area)
+  ;;  :precondition (and
+  ;;    (at ?c ?da)
+  ;;    (robot-at ?da)
+  ;;    (clean ?c)
+  ;;    (empty ?c)
+  ;;  )
+  ;;  :effect (and
+  ;;    (not (at ?c ?da))
+  ;;    (at ?c ?ca)
+  ;;  )
+  ;;)
   
   ;; Press espresso button
   (:action press-button-espresso
