@@ -64,19 +64,18 @@ domain-repo/
 |       ├── robotiq-2f-85
 |       └── ur5e
 |   └── wrappers
+|       ├── cup.py
+|       ├── location.py
 |       └── coffee_env.py
 ├── pddl/               # PDDL domain & problem files
 |   ├── domain.pddl
-|   └── problem.pddl
-├── planner/            # Planning interfaces & wrappers
-├── sim/                # Simulation launch scripts & utilities
-├── agents/             # Execution logic & agent controllers
-├── configs/            # YAML/JSON experiment configs
-├── logs/               # Simulation & training logs
-├── models/             # Saved policies & artifacts
+|   ├── problem.pddl
+|   └── ... other test pddl files ...
 ├── scripts/            # Helper scripts (plan, execute, render)
-├── tests/              # Unit and integration tests
-├── requirements.txt    # Python dependencies
+|   ├── pddl-parser     # pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser)
+|   └── planner
+|       └── planning_functions.py
+├── saycan_environment.yml
 └── README.md           # This file
 ```
 
@@ -94,7 +93,7 @@ domain-repo/
 
 - **Domain files:** stored in `pddl/domain.pddl`
 - **Problem files:** stored in `pddl/problem.pddl`
-- **Planner interface:** `planner/run_planner.py`
+- **Planner interface:** `scripts/planner/planning_functions.py`
 
 Example:
 
