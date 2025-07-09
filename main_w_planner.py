@@ -1,4 +1,4 @@
-from planning_functions import plan_and_parse, parse_pddl_objects
+from scripts.planner.planning_functions import plan_and_parse, parse_pddl_objects
 from envs.simulation.env import PickPlaceEnv
 from envs.wrappers.coffee_env import CoffeeEnv
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 high_resolution = True
 high_frame_rate = False
 
-problem_file = "pddl/problem.pddl"
+problem_file = "pddl/problem_all_clean.pddl"
 
 CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION = parse_pddl_objects(problem_file=problem_file)
 
