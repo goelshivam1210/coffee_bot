@@ -57,13 +57,13 @@ pip install -r requirements.txt
 ```text
 domain-repo/
 ├── envs/               # Custom Gym/PyBullet environments
-|   ├── simulation
+|   ├── simulation/
 |       ├── env.py
 |       ├── gripper.py
 |       ├── bowl        # Contains urdf for bowl
 |       ├── robotiq-2f-85
 |       └── ur5e
-|   └── wrappers
+|   └── wrappers/
 |       ├── cup.py
 |       ├── location.py
 |       └── coffee_env.py
@@ -72,10 +72,14 @@ domain-repo/
 |   ├── problem.pddl
 |   └── ... other test pddl files ...
 ├── scripts/            # Helper scripts (plan, execute, render)
-|   ├── pddl-parser     # pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser)
-|   └── planner
+|   ├── pddl-parser/    # pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser)
+|   └── planner/
 |       └── planning_functions.py
+├── utils/
+|   ├── logger.py
+|   └── transform_utils.py
 ├── saycan_environment.yml
+├── main_w_planner.py   # Plan & execute
 └── README.md           # This file
 ```
 
