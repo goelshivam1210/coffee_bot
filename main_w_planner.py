@@ -17,7 +17,7 @@ print("Generated ROBOT_LOCATION:", ROBOT_LOCATION)
 
 
 baseenv = PickPlaceEnv(render=True, high_res=high_resolution, high_frame_rate=high_frame_rate)
-env = CoffeeEnv(baseenv, CUPS, LOCATIONS, ROBOT_LOCATION, True)
+env = CoffeeEnv(baseenv, CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION, True)
 
 
 

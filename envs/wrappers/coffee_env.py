@@ -1,18 +1,20 @@
 from .location import Location
 from .cup import Cup
+from .button import Button
 
 class CoffeeEnv:
-    def __init__(self, baseenv, cups, locations, robot_loc, hands_free):
+    def __init__(self, baseenv, cups, locations, buttons, robot_loc, hands_free):
         self.cups = {Cup(cup).cup_name: Cup(cup) for cup in cups}
         self.locations = {Location(loc).loc_name: Location(loc) for loc in locations}
+        self.buttons = {Button(btn).button_name: Button(btn) for btn in buttons}
         self.robot_loc = robot_loc
         self.hands_free = hands_free
         self.holding = None
 
         self.baseenv = baseenv
         #need to make object list a list of cups: "CUP_TYPE CUP_NAME CUP_POS" and locations
-        self.object_list = [str(cup) for cup in self.cups.values()] + [str(loc) for loc in self.locations.values()] + ["esp-btn", "cap-btn", "amer-btn", "clean-btn"]
-        _ = self.baseenv.reset(self.object_list)
+        self.object_list = [str(cup) for cup in self.cups.values()] + [str(loc) for loc in self.locations.values()] + [str(btn) for btn in self.buttons.values()]
+        _ = self.baseenv.reset(self.cups, self.locations, self.buttons, self.robot_loc)
 
     def at(self, cup_name, loc_name):
         """Check if a cup is at a specific location."""

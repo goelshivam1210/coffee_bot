@@ -26,16 +26,17 @@ CUP_CONFIGS = {
 }
 
 BUTTON_CONFIGS = {
-    'esp-btn': {'type': 'espresso-button', 'color': 'brown'},
-    'cap-btn': {'type': 'cappuccino-button', 'color': 'white'},
-    'amer-btn': {'type': 'americano-button', 'color': 'black'},
+    'espresso-button': {'color': 'brown', 'coffee-machine': True},
+    'cappuccino-button': {'color': 'white', 'coffee-machine': True},
+    'americano-button': {'color': 'black', 'coffee-machine': True},
+    'cleaning-button': {'color': 'green1', 'coffee-machine': False},
 }
 
 LOCATION_CONFIGS = {
-    'loc3': {'type': 'coffee-machine', 'position': (0, -0.7, 0), 'color': 'coffee_machine'},
-    'loc1': {'type': 'dirty-area', 'position': (-0.2, -0.35, 0), 'color': 'red'},      # Left third
-    'loc2': {'type': 'clean-area', 'position': (0, -0.35, 0), 'color': 'green1'},      # Middle third  
-    'loc4': {'type': 'serving-counter', 'position': (0.2, -0.35, 0), 'color': 'silver'}, # Right third
+    'coffee-machine': {'position': (0, -0.7, 0), 'color': 'coffee_machine'},
+    'dirty-area': {'position': (-0.2, -0.35, 0), 'color': 'red'},      # Left third
+    'clean-area': {'position': (0, -0.35, 0), 'color': 'green1'},      # Middle third
+    'serving-counter': {'position': (0.2, -0.35, 0), 'color': 'silver'}, # Right third
 }
 
 CORNER_POS = {

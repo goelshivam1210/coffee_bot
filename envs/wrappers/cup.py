@@ -11,4 +11,4 @@ class Cup:
         self.dirty = cup_info[6] == "True"
 
     def __str__(self):
-        return f"{self.cup_type} {self.cup_name} {self.cup_loc}"
+        return f"{self.cup_name}"
