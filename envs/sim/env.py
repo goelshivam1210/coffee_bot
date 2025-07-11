@@ -1,13 +1,338 @@
-from envs.simulation.configs import COLORS, CUP_CONFIGS, BUTTON_CONFIGS, LOCATION_CONFIGS, CORNER_POS, PIXEL_SIZE, BOUNDS
+from envs.sim.configs import COLORS, CUP_CONFIGS, BUTTON_CONFIGS, LOCATION_CONFIGS, CORNER_POS, PIXEL_SIZE, BOUNDS
 import os
 import pybullet
 import pybullet_data
 import cv2
 import numpy as np
 from utils.transform_utils import correct_quaternion_ignore_roll
-from envs.simulation.gripper import Robotiq2F85
+from envs.sim.gripper import Robotiq2F85
 from envs.wrappers.cup import Cup
 from envs.wrappers.location import Location
+
+class SimActions:
+  def __init__(self, cups, locations, buttons, robot_location, render=False, high_res=False, high_frame_rate=False, max_steps=5000):
+    self.base_env = PickPlaceEnv(render=render, high_res=high_res, high_frame_rate=high_frame_rate, max_steps=max_steps)
+    self.base_env.reset(cups, locations, buttons)
+    self.move_to_location(robot_location)
+
+  def pick(self, obj_to_pick):
+    """Do pick and place motion primitive."""
+
+    self.base_env.gripper.release()
+    steps = 0
+
+    if not self.base_env.locate(obj_to_pick):
+      print(f"cannot pick as {obj_to_pick} cannot be located")
+      return False
+    # if not self.base_env.clear(obj_to_pick) :
+    #   print(f"cannot pick as {obj_to_pick} as its not clear")
+    #   return False
+
+    pick_pos = self.base_env.get_obj_pos(obj_to_pick).copy()
+    obj_orn = self.base_env.get_obj_orn(obj_to_pick).copy()
+    # we only care about the z , since the cube might be rotated
+    obj_orn = correct_quaternion_ignore_roll(obj_orn)
+
+    # add home_ee_euler to the orientation
+
+    home_quat = pybullet.getQuaternionFromEuler(self.base_env.home_ee_euler)
+    pick_orn = pybullet.multiplyTransforms([0, 0, 0], home_quat, [0, 0, 0], obj_orn)[1]
+
+
+    pick_z = pick_pos[2] + 0.005
+    # Set fixed primitive z-heights.
+    hover_xyz = np.float32([pick_pos[0], pick_pos[1], 0.2])
+    if pick_pos.shape[-1] == 2:
+      pick_xyz = np.append(pick_pos, pick_z)
+    else:
+      pick_xyz = pick_pos
+      pick_xyz[2] = pick_z
+
+    # Move to object.
+    ee_xyz = self.base_env.get_ee_pos()
+    while np.linalg.norm(hover_xyz - ee_xyz) > 0.01:
+      # self.base_env.movep(hover_xyz)
+      self.base_env.move_with_ee(hover_xyz, pick_orn)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print("max steps reached while moving to hover position")
+        return False
+
+    while np.linalg.norm(pick_xyz - ee_xyz) > 0.01:
+      # self.base_env.movep(pick_xyz)
+      self.base_env.move_with_ee(pick_xyz, pick_orn)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print("max steps reached while moving to pick position")
+        return False
+
+    # Pick up object.
+    self.base_env.gripper.activate()
+    for _ in range(240):
+      self.base_env.step_sim_and_render()
+    while np.linalg.norm(hover_xyz - ee_xyz) > 0.01:
+      self.base_env.movep(hover_xyz)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print("max steps reached while moving to hover position after pick")
+        # release the object
+        self.base_env.gripper.release()
+        return False
+    
+    for _ in range(50):
+      self.base_env.step_sim_and_render()
+
+    if self.hand_empty():
+      return False
+    
+
+    if obj_to_pick == 'blue block' and not self.hand_empty():
+      # check the object that is closest to the gripper
+      obj_pos = []
+      for objs in self.base_env.object_list:
+        obj_pos.append(self.base_env.get_obj_pos(objs).copy())
+      obj_pos = np.array(obj_pos)
+      ee_pos = self.base_env.get_ee_pos()
+      dist = np.linalg.norm(obj_pos - ee_pos, axis=1)
+      closest_obj = self.base_env.object_list[np.argmin(dist)]
+      # print(f"closest object to gripper is {closest_obj}")
+      if closest_obj == obj_to_pick:
+        print("picked up the correct object!")
+
+    return True
+  
+
+  def place(self, which_object, obj_to_place, find_empty_pos=False):
+    """Do place motion primitive."""
+
+    if 'table' in obj_to_place:
+      self.base_env.putdown()
+      return True
+
+    if not self.base_env.locate(obj_to_place):
+      print(f"cannot place as {obj_to_place} cannot be located")
+      return False
+    # if not self.base_env.clear(obj_to_place) :
+    #   print(f"cannot place as {obj_to_place} as its not clear")
+    #   return False
+        
+    place_pos = self.base_env.get_obj_pos(obj_to_place).copy()
+
+    if place_pos.shape[-1] == 2:
+      place_xyz = np.append(place_pos, 0.15)
+    else:
+      place_xyz = place_pos
+      place_xyz[2] = 0.15
+
+    # find empty position on top of the obj_to_place area if find_empty_pos is True
+    if find_empty_pos:
+      obj_pos = []
+      for objs in self.base_env.object_list:
+        if objs == obj_to_place:
+          continue
+        obj_pos.append(self.base_env.get_obj_pos(objs).copy())
+      
+      # Check if initial place_xyz is already good
+      total_objects_far = 0
+      for pos in obj_pos:
+        if np.linalg.norm(place_xyz[:2] - pos[:2]) > 0.07:
+          total_objects_far += 1
+      
+      # Only search for new position if initial one is not suitable
+      if total_objects_far != len(obj_pos):
+        num_choose_times = 0
+        while True:
+          random_empty_pos_candidate = [np.random.uniform(place_pos[0] - .08, 
+                                                          place_pos[0] + .08), 
+                                        np.random.uniform(place_pos[1] - .10, 
+                                                          place_pos[1] + .10), 
+                                        0.15]
+          total_objects_far = 0
+          for pos in obj_pos:
+            if np.linalg.norm(random_empty_pos_candidate[:2] - pos[:2]) > 0.07:
+              total_objects_far += 1
+          if total_objects_far == len(obj_pos):
+            place_xyz = np.array(random_empty_pos_candidate)
+            break 
+          num_choose_times += 1
+          if num_choose_times > 300:
+            print("cannot find empty position to place object")
+            return False
+    
+
+    ee_xyz = self.base_env.get_ee_pos()
+    # Move to place location.
+    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
+      self.base_env.movep(place_xyz)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+
+    # Place down object.
+    while (not self.base_env.gripper.detect_contact()) and (place_xyz[2] > 0.03):
+      place_xyz[2] -= 0.001
+      self.base_env.movep(place_xyz)
+      for _ in range(3):
+        self.base_env.step_sim_and_render()
+    self.base_env.gripper.release()
+    for _ in range(240):
+      self.base_env.step_sim_and_render()
+    place_xyz[2] = 0.2
+    ee_xyz = self.base_env.get_ee_pos()
+    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
+      self.base_env.movep(place_xyz)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+    place_xyz = np.float32([0, -0.5, 0.2])
+    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
+      self.base_env.movep(place_xyz)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+
+    if not self.hand_empty():
+      return False
+    return True
+
+  def move_to_location(self, obj_name):
+    """
+    Move the robot to location and hover above it
+    """
+    if obj_name in self.base_env.location_ids:
+      loc_id = self.base_env.location_ids[obj_name]
+      loc_pos = pybullet.getBasePositionAndOrientation(loc_id)[0]
+      
+      # Hover above the location
+      hover_pos = np.float32([loc_pos[0], loc_pos[1], 0.2])
+      
+      steps = 0
+      ee_xyz = self.base_env.get_ee_pos()
+      
+      # Move to hover position above location
+      while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
+        self.base_env.movep(hover_pos)
+        self.base_env.step_sim_and_render()
+        ee_xyz = self.base_env.get_ee_pos()
+        steps += 1
+        if steps > self.base_env.max_steps:
+          print(f"Max steps reached while moving to location {obj_name}")
+          return False
+      
+      # Stabilize at hover position
+      for _ in range(150):
+        self.base_env.step_sim_and_render()
+      
+      return True
+    else:
+      print(f"Location {obj_name} not found")
+      return False
+    
+  def press_button(self, button_name):
+    """
+    Press a button on the coffee machine by moving to it and tapping with gripper
+    """
+    if button_name not in self.base_env.obj_name_to_id:
+      print(f"Button {button_name} not found")
+      return False
+    
+    button_id = self.base_env.obj_name_to_id[button_name]
+    button_pos = pybullet.getBasePositionAndOrientation(button_id)[0]
+    
+    # Positions for button pressing sequence
+    hover_pos = np.float32([button_pos[0], button_pos[1], button_pos[2] + 0.05])  # Hover above button
+    press_pos = np.float32([button_pos[0], button_pos[1], button_pos[2]])  # Press down on button
+    
+    steps = 0
+    ee_xyz = self.base_env.get_ee_pos()
+    
+    # Move to hover position above button
+    while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
+      self.base_env.movep(hover_pos)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print(f"Max steps reached while moving to button {button_name}")
+        return False
+    
+    # Stabilize above button
+    for _ in range(30):
+      self.base_env.step_sim_and_render()
+    
+    # Close gripper before pressing
+    self.base_env.gripper.activate()
+    for _ in range(240):
+      self.base_env.step_sim_and_render()
+    
+    # Move down to press the button
+    ee_xyz = self.base_env.get_ee_pos()
+    while np.linalg.norm(press_pos - ee_xyz) > 0.005:
+      self.base_env.movep(press_pos)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print(f"Max steps reached while pressing button {button_name}")
+        self.base_env.gripper.release()
+        return False
+    
+    # Hold press for a moment
+    for _ in range(60):
+      self.base_env.step_sim_and_render()
+    
+    # Move back up to hover position
+    ee_xyz = self.base_env.get_ee_pos()
+    while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
+      self.base_env.movep(hover_pos)
+      self.base_env.step_sim_and_render()
+      ee_xyz = self.base_env.get_ee_pos()
+      steps += 1
+      if steps > self.base_env.max_steps:
+        print(f"Max steps reached while retracting from button {button_name}")
+        break
+    
+    # Release gripper
+    self.base_env.gripper.release()
+    for _ in range(240):
+      self.base_env.step_sim_and_render()
+    
+    return True
+
+  def on_top_of(self, obj_a, obj_b):
+    """
+    check if obj_a is on top of obj_b
+    condition 1: l2 distance on xy plane is less than a threshold
+    condition 2: obj_a is higher than obj_b
+    """
+    obj_a_pos = self.base_env.get_obj_pos(obj_a)
+    obj_b_pos = self.base_env.get_obj_pos(obj_b)
+    xy_dist = np.linalg.norm(obj_a_pos[:2] - obj_b_pos[:2])
+    if obj_b in CORNER_POS:
+      is_near = xy_dist < 0.06
+      return is_near
+    elif 'bowl' in obj_b:
+      is_near = xy_dist < 0.06
+      is_higher = obj_a_pos[2] > obj_b_pos[2]
+      return is_near and is_higher
+    else:
+      is_near = xy_dist < 0.12
+      print(f"Checking if {obj_a} is on top of {obj_b}: distance = {xy_dist}, threshold = 0.1")
+      is_higher = obj_a_pos[2] >= obj_b_pos[2]
+      return is_near and is_higher
+    
+  def hand_empty(self):
+    """
+    True if gripper is empty
+    """
+    return self.base_env.gripper.check_if_gripper_empty()
+
+
+
+
 
 class PickPlaceEnv:
   def __init__(self, render=False, high_res=False, high_frame_rate=False, max_steps=5000):
@@ -38,12 +363,11 @@ class PickPlaceEnv:
 
     self.max_steps = max_steps # max number of steps for one action
 
-  def reset(self, cups, locations, buttons, robot_location):
-    print(cups, locations, buttons)
-    self._reset_simulation(robot_location)
+  def reset(self, cups, locations, buttons):
+    self._reset_simulation()
     self._load_objects(cups, locations, buttons)
 
-  def _reset_simulation(self, robot_location):
+  def _reset_simulation(self):
     # Reset pybullet
     pybullet.resetSimulation(pybullet.RESET_USE_DEFORMABLE_WORLD)
     pybullet.setGravity(0, 0, -9.8)
@@ -52,8 +376,8 @@ class PickPlaceEnv:
 
     # Reset robot
     pybullet.loadURDF("plane.urdf", [0, 0, -0.001])
-    self.robot_id = pybullet.loadURDF("envs/simulation/ur5e/ur5e.urdf", [0, 0, 0], flags=pybullet.URDF_USE_MATERIAL_COLORS_FROM_MTL)
-    self.ghost_id = pybullet.loadURDF("envs/simulation/ur5e/ur5e.urdf", [0, 0, -10])  # For forward kinematics.
+    self.robot_id = pybullet.loadURDF("envs/sim/ur5e/ur5e.urdf", [0, 0, 0], flags=pybullet.URDF_USE_MATERIAL_COLORS_FROM_MTL)
+    self.ghost_id = pybullet.loadURDF("envs/sim/ur5e/ur5e.urdf", [0, 0, -10])  # For forward kinematics.
     self.joint_ids = [pybullet.getJointInfo(self.robot_id, i) for i in range(pybullet.getNumJoints(self.robot_id))]
     self.joint_ids = [j[0] for j in self.joint_ids if j[2] == pybullet.JOINT_REVOLUTE]
 
@@ -131,8 +455,6 @@ class PickPlaceEnv:
       else:
         raise ValueError(f"Unknown location type: {loc_type}")
       
-        
-
     # Create cups
 
     for cup in cups.values():
@@ -218,189 +540,6 @@ class PickPlaceEnv:
     ee_xyz = np.float32(pybullet.getLinkState(self.robot_id, self.tip_link_id)[0])
     return ee_xyz
 
-  def pick(self, obj_to_pick):
-    """Do pick and place motion primitive."""
-
-    self.gripper.release()
-    steps = 0
-
-    if not self.locate(obj_to_pick):
-      print(f"cannot pick as {obj_to_pick} cannot be located")
-      return False
-    if not self.clear(obj_to_pick) :
-      print(f"cannot pick as {obj_to_pick} as its not clear")
-      return False
-
-    pick_pos = self.get_obj_pos(obj_to_pick).copy()
-    obj_orn = self.get_obj_orn(obj_to_pick).copy()
-    # we only care about the z , since the cube might be rotated
-    obj_orn = correct_quaternion_ignore_roll(obj_orn)
-
-    # add home_ee_euler to the orientation
-
-    home_quat = pybullet.getQuaternionFromEuler(self.home_ee_euler)
-    pick_orn = pybullet.multiplyTransforms([0, 0, 0], home_quat, [0, 0, 0], obj_orn)[1]
-
-
-    pick_z = pick_pos[2] + 0.005
-    # Set fixed primitive z-heights.
-    hover_xyz = np.float32([pick_pos[0], pick_pos[1], 0.2])
-    if pick_pos.shape[-1] == 2:
-      pick_xyz = np.append(pick_pos, pick_z)
-    else:
-      pick_xyz = pick_pos
-      pick_xyz[2] = pick_z
-
-    # Move to object.
-    ee_xyz = self.get_ee_pos()
-    while np.linalg.norm(hover_xyz - ee_xyz) > 0.01:
-      # self.movep(hover_xyz)
-      self.move_with_ee(hover_xyz, pick_orn)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print("max steps reached while moving to hover position")
-        return False
-
-    while np.linalg.norm(pick_xyz - ee_xyz) > 0.01:
-      # self.movep(pick_xyz)
-      self.move_with_ee(pick_xyz, pick_orn)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print("max steps reached while moving to pick position")
-        return False
-
-    # Pick up object.
-    self.gripper.activate()
-    for _ in range(240):
-      self.step_sim_and_render()
-    while np.linalg.norm(hover_xyz - ee_xyz) > 0.01:
-      self.movep(hover_xyz)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print("max steps reached while moving to hover position after pick")
-        # release the object
-        self.gripper.release()
-        return False
-    
-    for _ in range(50):
-      self.step_sim_and_render()
-
-    if self.hand_empty():
-      return False
-    
-
-    if obj_to_pick == 'blue block' and not self.hand_empty():
-      # check the object that is closest to the gripper
-      obj_pos = []
-      for objs in self.object_list:
-        obj_pos.append(self.get_obj_pos(objs).copy())
-      obj_pos = np.array(obj_pos)
-      ee_pos = self.get_ee_pos()
-      dist = np.linalg.norm(obj_pos - ee_pos, axis=1)
-      closest_obj = self.object_list[np.argmin(dist)]
-      # print(f"closest object to gripper is {closest_obj}")
-      if closest_obj == obj_to_pick:
-        print("picked up the correct object!")
-
-
-    return True
-
-  def place(self, which_object, obj_to_place, find_empty_pos=False):
-    """Do place motion primitive."""
-
-    if 'table' in obj_to_place:
-      self.putdown()
-      return True
-
-    if not self.locate(obj_to_place):
-      print(f"cannot place as {obj_to_place} cannot be located")
-      return False
-    # if not self.clear(obj_to_place) :
-    #   print(f"cannot place as {obj_to_place} as its not clear")
-    #   return False
-        
-    place_pos = self.get_obj_pos(obj_to_place).copy()
-
-    if place_pos.shape[-1] == 2:
-      place_xyz = np.append(place_pos, 0.15)
-    else:
-      place_xyz = place_pos
-      place_xyz[2] = 0.15
-
-    # find empty position on top of the obj_to_place area if find_empty_pos is True
-    if find_empty_pos:
-      obj_pos = []
-      for objs in self.object_list:
-        if objs == obj_to_place:
-          continue
-        obj_pos.append(self.get_obj_pos(objs).copy())
-      
-      # Check if initial place_xyz is already good
-      total_objects_far = 0
-      for pos in obj_pos:
-        if np.linalg.norm(place_xyz[:2] - pos[:2]) > 0.07:
-          total_objects_far += 1
-      
-      # Only search for new position if initial one is not suitable
-      if total_objects_far != len(obj_pos):
-        num_choose_times = 0
-        while True:
-          random_empty_pos_candidate = [np.random.uniform(place_pos[0] - .08, 
-                                                          place_pos[0] + .08), 
-                                        np.random.uniform(place_pos[1] - .10, 
-                                                          place_pos[1] + .10), 
-                                        0.15]
-          total_objects_far = 0
-          for pos in obj_pos:
-            if np.linalg.norm(random_empty_pos_candidate[:2] - pos[:2]) > 0.07:
-              total_objects_far += 1
-          if total_objects_far == len(obj_pos):
-            place_xyz = np.array(random_empty_pos_candidate)
-            break 
-          num_choose_times += 1
-          if num_choose_times > 300:
-            print("cannot find empty position to place object")
-            return False
-    
-
-    ee_xyz = self.get_ee_pos()
-    # Move to place location.
-    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
-      self.movep(place_xyz)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-
-    # Place down object.
-    while (not self.gripper.detect_contact()) and (place_xyz[2] > 0.03):
-      place_xyz[2] -= 0.001
-      self.movep(place_xyz)
-      for _ in range(3):
-        self.step_sim_and_render()
-    self.gripper.release()
-    for _ in range(240):
-      self.step_sim_and_render()
-    place_xyz[2] = 0.2
-    ee_xyz = self.get_ee_pos()
-    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
-      self.movep(place_xyz)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-    place_xyz = np.float32([0, -0.5, 0.2])
-    while np.linalg.norm(place_xyz - ee_xyz) > 0.01:
-      self.movep(place_xyz)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-
-    if not self.hand_empty():
-      return False
-    return True
-
   def locate(self, obj_to_locate):
     if obj_to_locate in self.object_list:
       return True
@@ -484,33 +623,6 @@ class PickPlaceEnv:
     intrinsics = np.float32(intrinsics).reshape(3, 3)
     return color, depth, position, orientation, intrinsics
   
-  def on_top_of(self, obj_a, obj_b):
-    """
-    check if obj_a is on top of obj_b
-    condition 1: l2 distance on xy plane is less than a threshold
-    condition 2: obj_a is higher than obj_b
-    """
-    obj_a_pos = self.get_obj_pos(obj_a)
-    obj_b_pos = self.get_obj_pos(obj_b)
-    xy_dist = np.linalg.norm(obj_a_pos[:2] - obj_b_pos[:2])
-    if obj_b in CORNER_POS:
-      is_near = xy_dist < 0.06
-      return is_near
-    elif 'bowl' in obj_b:
-      is_near = xy_dist < 0.06
-      is_higher = obj_a_pos[2] > obj_b_pos[2]
-      return is_near and is_higher
-    else:
-      is_near = xy_dist < 0.04
-      is_higher = obj_a_pos[2] > obj_b_pos[2]
-      return is_near and is_higher
-
-  def hand_empty(self):
-    """
-    True if gripper is empty
-    """
-    return self.gripper.check_if_gripper_empty()
-
   def on_table(self, obj_a):
     """
     True if obj_a is on table
@@ -556,110 +668,6 @@ class PickPlaceEnv:
     pose = pybullet.getBasePositionAndOrientation(pick_id)
     orn = np.float32(pose[1])
     return orn  
-  
-  def move_to_location(self, obj_name):
-    """
-    Move the robot to location and hover above it
-    """
-    if obj_name in self.location_ids:
-      loc_id = self.location_ids[obj_name]
-      loc_pos = pybullet.getBasePositionAndOrientation(loc_id)[0]
-      
-      # Hover above the location
-      hover_pos = np.float32([loc_pos[0], loc_pos[1], 0.2])
-      
-      steps = 0
-      ee_xyz = self.get_ee_pos()
-      
-      # Move to hover position above location
-      while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
-        self.movep(hover_pos)
-        self.step_sim_and_render()
-        ee_xyz = self.get_ee_pos()
-        steps += 1
-        if steps > self.max_steps:
-          print(f"Max steps reached while moving to location {obj_name}")
-          return False
-      
-      # Stabilize at hover position
-      for _ in range(150):
-        self.step_sim_and_render()
-      
-      return True
-    else:
-      print(f"Location {obj_name} not found")
-      return False
-    
-  def press_button(self, button_name):
-    """
-    Press a button on the coffee machine by moving to it and tapping with gripper
-    """
-    if button_name not in self.obj_name_to_id:
-      print(f"Button {button_name} not found")
-      return False
-    
-    button_id = self.obj_name_to_id[button_name]
-    button_pos = pybullet.getBasePositionAndOrientation(button_id)[0]
-    
-    # Positions for button pressing sequence
-    hover_pos = np.float32([button_pos[0], button_pos[1], button_pos[2] + 0.05])  # Hover above button
-    press_pos = np.float32([button_pos[0], button_pos[1], button_pos[2]])  # Press down on button
-    
-    steps = 0
-    ee_xyz = self.get_ee_pos()
-    
-    # Move to hover position above button
-    while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
-      self.movep(hover_pos)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print(f"Max steps reached while moving to button {button_name}")
-        return False
-    
-    # Stabilize above button
-    for _ in range(30):
-      self.step_sim_and_render()
-    
-    # Close gripper before pressing
-    self.gripper.activate()
-    for _ in range(240):
-      self.step_sim_and_render()
-    
-    # Move down to press the button
-    ee_xyz = self.get_ee_pos()
-    while np.linalg.norm(press_pos - ee_xyz) > 0.005:
-      self.movep(press_pos)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print(f"Max steps reached while pressing button {button_name}")
-        self.gripper.release()
-        return False
-    
-    # Hold press for a moment
-    for _ in range(60):
-      self.step_sim_and_render()
-    
-    # Move back up to hover position
-    ee_xyz = self.get_ee_pos()
-    while np.linalg.norm(hover_pos - ee_xyz) > 0.01:
-      self.movep(hover_pos)
-      self.step_sim_and_render()
-      ee_xyz = self.get_ee_pos()
-      steps += 1
-      if steps > self.max_steps:
-        print(f"Max steps reached while retracting from button {button_name}")
-        break
-    
-    # Release gripper
-    self.gripper.release()
-    for _ in range(240):
-      self.step_sim_and_render()
-    
-    return True
   
   def change_color(self, obj_name, color):
     """

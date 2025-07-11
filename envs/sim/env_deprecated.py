@@ -4,7 +4,7 @@ import pybullet_data
 import cv2
 import numpy as np
 from utils.transform_utils import correct_quaternion_ignore_roll
-from envs.simulation.gripper import Robotiq2F85
+from envs.sim.gripper import Robotiq2F85
 
 COLORS = {
     'red':    (255/255,  87/255,  89/255, 255/255),
