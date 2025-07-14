@@ -28,4 +28,4 @@ for individual_operator in parsed_plan:
   env.execute(individual_operator)
 
 # Save video of simulation
-baseenv.save_video("my_simulation.mp4")
+env.sim_actions.base_env.save_video("my_simulation.mp4")

@@ -21,8 +21,10 @@ class ActionExecutor:
         
     
     def execute(self, action_string):
+        print("Executing action:", action_string)
         action_array = action_string.split(' ')
         action = action_array[0]
+        self.validate_symbolic_state()
         if action == 'PICK':
             cup_to_pick = action_array[1].lower()
             cup_location = action_array[2].lower()
@@ -65,7 +67,7 @@ class ActionExecutor:
             cm_location = action_array[3].lower()
             self.symbolic_state.press_cleaning_button(button_name, cup_name, cm_location)
             self.sim_actions.press_button(button_name)
-        self.validate_symbolic_state()
+        
     
     def validate_symbolic_state(self):
         """Validate symbolic state against the base environment"""

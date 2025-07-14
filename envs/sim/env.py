@@ -320,7 +320,6 @@ class SimActions:
       return is_near and is_higher
     else:
       is_near = xy_dist < 0.12
-      print(f"Checking if {obj_a} is on top of {obj_b}: distance = {xy_dist}, threshold = 0.1")
       is_higher = obj_a_pos[2] >= obj_b_pos[2]
       return is_near and is_higher
     
