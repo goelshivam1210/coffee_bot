@@ -38,19 +38,14 @@ Use this template to organize modules for environment development, planner integ
 
 ```bash
 # Clone and enter
-git clone https://github.com/yourorg/your-domain-repo.git
-cd your-domain-repo
+git clone https://github.com/goelshivam1210/coffee_bot.git
+cd coffee_bot
 
 # Create & activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate       # Linux/Mac
-.venv\Scripts\activate.bat     # Windows
-
-# Install core dependencies
-pip install -r requirements.txt
+conda env create
+conda activate saycan
 ```
 
-*Optional tools:* Fast Downward, Metric-FF, or other PDDL planners installed separately.
 
 ## Directory Structure
 
@@ -59,12 +54,14 @@ domain-repo/
 ├── envs/               # Custom Gym/PyBullet environments
 |   ├── simulation/
 |       ├── env.py
+|       ├── configs.py
 |       ├── gripper.py
 |       ├── bowl        # Contains urdf for bowl
 |       ├── robotiq-2f-85
 |       └── ur5e
 |   └── wrappers/
 |       ├── cup.py
+|       ├── button.py
 |       ├── location.py
 |       └── coffee_env.py
 ├── pddl/               # PDDL domain & problem files
@@ -78,7 +75,7 @@ domain-repo/
 ├── utils/
 |   ├── logger.py
 |   └── transform_utils.py
-├── saycan_environment.yml
+├── environment.yml
 ├── main_w_planner.py   # Plan & execute
 └── README.md           # This file
 ```
@@ -86,80 +83,39 @@ domain-repo/
 ## Environment
 
 - **Location:** `envs/`
-- **Registration:** Envs register via `gym.register(...)` in `envs/__init__.py`.
-- **Usage:** Import and create with:
-  ```python
-  import gym
-  env = gym.make('YourCustomEnv-v0')
-  ```
 
 ## PDDL Planning
 
 - **Domain files:** stored in `pddl/domain.pddl`
 - **Problem files:** stored in `pddl/problem.pddl`
-- **Planner interface:** `scripts/planner/planning_functions.py`
-
-Example:
-
-```bash
-python scripts/plan.py \
-  --domain pddl/domain.pddl \
-  --problem pddl/problem.pddl \
-  --planner fast-downward \
-  --output plan.txt
-```
+- **Planner interface:** `scripts/planner/planning_functions.py`. Uses the pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser).
+- **TODO:** Add command line arguments for PDDL problem file.
 
 ## Simulation Execution
 
-- **Execution script:** `scripts/execute.py`
-- **Arguments:** plan file, env name, rendering flags
+- **Execution script:** `main_w_planner.py`
+- **Arguments:** None
 
 Example:
 
 ```bash
-python scripts/execute.py \
-  --plan plan.txt \
-  --env YourCustomEnv-v0 \
-  --render True
+python main_w_planner.py
 ```
+Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file in the `main_w_planner.py` file. Executes generated plan in the simulation environment.
 
 ## Usage Examples
 
-1. **Full pipeline:** plan → simulate
-   ```bash
-   python scripts/plan.py --domain pddl/domain.pddl --problem pddl/problem.pddl --output plan.txt
-   python scripts/execute.py --plan plan.txt --env YourCustomEnv-v0
-   ```
-2. **Interactive rendering:**
-   ```bash
-   python scripts/render.py --env YourCustomEnv-v0 --episodes 3
-   ```
+1. TBD
 
 ## Configuration
 
-- Modify experiment settings in `configs/*.yaml`
-- Typical fields:
-  - Environment parameters
-  - Planner options (e.g., search strategies)
-  - Simulation settings (timestep, max steps)
+- Modify environment parameters in `envs/sim/configs.py`
+- Modify PDDL problem file in `main_w_planner.py`
+- TODO: add global config file
 
 ## Logging & Visualization
 
-- Logs saved under `logs/` by default
-- Visualize metrics with TensorBoard:
-  ```bash
-  ```
-
-tensorboard --logdir logs/
-
-````
-
-## Testing
-
-Run unit & integration tests:
-```bash
-pytest tests/
-````
+TBD
 
 ## Contributing
 
