@@ -9,6 +9,7 @@
     esp-btn - espresso-button
     cap-btn - cappuccino-button
     amer-btn - americano-button
+    clean-btn - cleaning-button
     
     loc1 - dirty-area
     loc2 - clean-area

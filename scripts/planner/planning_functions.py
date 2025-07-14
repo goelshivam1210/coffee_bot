@@ -124,9 +124,10 @@ def parse_pddl_objects(domain_file="pddl/domain.pddl", problem_file="pddl/proble
                 locations.append(location_entry)
     
     # Process buttons
-    for button_type in ['espresso-button', 'cappuccino-button', 'americano-button']:
+    for button_type in ['espresso-button', 'cappuccino-button', 'americano-button', 'cleaning-button']:
         if button_type in parser.objects:
             for button_name in parser.objects[button_type]:
-                buttons.append(button_name)
-    
+                button_entry = f"{button_type} {button_name}"
+                buttons.append(button_entry)
+
     return cups, locations, buttons, robot_location

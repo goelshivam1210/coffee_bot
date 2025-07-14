@@ -13,7 +13,7 @@ class Robotiq2F85:
     self.tool = tool
     pos = [0.1339999999999999, -0.49199999999872496, 0.5]
     rot = pybullet.getQuaternionFromEuler([np.pi, 0, np.pi])
-    urdf = 'envs/simulation/robotiq_2f_85/robotiq_2f_85.urdf'
+    urdf = 'envs/sim/robotiq_2f_85/robotiq_2f_85.urdf'
     self.body = pybullet.loadURDF(urdf, pos, rot)
     self.n_joints = pybullet.getNumJoints(self.body)
     self.activated = False

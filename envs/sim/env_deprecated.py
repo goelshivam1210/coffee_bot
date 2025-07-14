@@ -4,7 +4,7 @@ import pybullet_data
 import cv2
 import numpy as np
 from utils.transform_utils import correct_quaternion_ignore_roll
-from envs.simulation.gripper import Robotiq2F85
+from envs.sim.gripper import Robotiq2F85
 
 COLORS = {
     'red':    (255/255,  87/255,  89/255, 255/255),
@@ -236,7 +236,6 @@ class PickPlaceEnv():
     object_list = [obj for obj in object_list if "cup" not in obj]
     object_list += cup_list
     self.object_list = object_list
-    print(object_list)
     # Re-enable rendering.
     pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
 
@@ -372,12 +371,6 @@ class PickPlaceEnv():
 
 
     return True
-
-    # observation = self.get_observation()
-    # reward = self.get_reward()
-    # done = False
-    # info = {}
-    # return observation, reward, done, info
 
   def place(self, which_object, obj_to_place, find_empty_pos=False):
     """Do place motion primitive."""
@@ -928,7 +921,7 @@ class PickPlaceEnv():
     
     # Close gripper before pressing
     self.gripper.activate()
-    for _ in range(230):
+    for _ in range(240):
       self.step_sim_and_render()
     
     # Move down to press the button
@@ -960,10 +953,9 @@ class PickPlaceEnv():
     
     # Release gripper
     self.gripper.release()
-    for _ in range(230):
+    for _ in range(240):
       self.step_sim_and_render()
     
-    print(f"Successfully pressed button {button_name}")
     return True
   
   def change_color(self, obj_name, color):
