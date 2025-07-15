@@ -15,9 +15,9 @@ The project consists of a custom reinforcement learning environment for a coffee
   - [Environment](#environment)
   - [PDDL Planning](#pddl-planning)
   - [Simulation Execution](#simulation-execution)
-  - [Usage Examples](#usage-examples)
+    <!-- - [Usage Examples](#usage-examples) -->
   - [Configuration](#configuration)
-  - [Logging \& Visualization](#logging--visualization)
+    <!-- - [Logging \& Visualization](#logging--visualization) -->
   - [Contributing](#contributing)
   - [Contact](#contact)
 
@@ -50,7 +50,7 @@ conda activate saycan
 ## Directory Structure
 
 ```text
-domain-repo/
+coffee-bot/
 ├── envs/               # Custom Gym/PyBullet environments
 |   ├── simulation/
 |       ├── env.py
@@ -103,9 +103,9 @@ python main_w_planner.py
 ```
 Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file in the `main_w_planner.py` file. Executes generated plan in the simulation environment.
 
-## Usage Examples
+<!-- ## Usage Examples
 
-1. TBD
+1. TBD -->
 
 ## Configuration
 
@@ -113,9 +113,9 @@ Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file i
 - Modify PDDL problem file in `main_w_planner.py`
 - TODO: add global config file
 
-## Logging & Visualization
+<!-- ## Logging & Visualization
 
-TBD
+TBD -->
 
 ## Contributing
 
