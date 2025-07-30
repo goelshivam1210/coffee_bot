@@ -239,4 +239,29 @@ class SymbolicState:
         # Update the base environment
         # self.baseenv.press_button(button_name)
         # self.baseenv.change_color(cup_name, "silver")  # Change cup color to indicate cleaning
-        
+
+    def get_groundings(self):
+        """Get current symbolic state in object form for JSON serialization."""
+        return {
+            "cups": [{
+                    "cup_type": cup.cup_type,
+                    "cup_name": cup.cup_name,
+                    "cup_loc": cup.cup_loc,
+                    "cup_clean": cup.cup_clean,
+                    "cup_empty": cup.cup_empty,
+                    "cup_full": cup.cup_full,
+                    "dirty": cup.dirty
+                } for cup in self.cups.values()],
+            "locations": [{
+                    "loc_name": loc.loc_name,
+                    "loc_type": loc.loc_type
+                } for loc in self.locations.values()],
+            "buttons": [{
+                    "button_name": btn.button_name,
+                    "button_type": btn.button_type
+                } for btn in self.buttons.values()],
+            "robot_location": self.robot_loc,
+            "hands_free": self.hands_free,
+            "holding": str(self.holding) if self.holding else None
+        }
+    
