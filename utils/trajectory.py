@@ -9,14 +9,19 @@ def save_to_json(trajectories):
     import json 
     # Get datetime
     import datetime
+    import cv2
     timestamp = datetime.datetime.now().timestamp()
+    import os
+    if not os.path.exists("trajectories"):
+        os.makedirs("trajectories")
 
     data = []
-    for traj in trajectories:
+    for ind, traj in enumerate(trajectories):
+        cv2.imwrite(f"trajectories/{timestamp}_{ind}.png", traj.image)
         traj_data = {
             "groundings": traj.groundings,
             "action": traj.action,
-            "image": traj.image
+            "image": f"trajectories/{timestamp}_{ind}.png"
         }
         data.append(traj_data)
 

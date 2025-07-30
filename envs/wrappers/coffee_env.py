@@ -252,14 +252,6 @@ class SymbolicState:
                     "cup_full": cup.cup_full,
                     "dirty": cup.dirty
                 } for cup in self.cups.values()],
-            "locations": [{
-                    "loc_name": loc.loc_name,
-                    "loc_type": loc.loc_type
-                } for loc in self.locations.values()],
-            "buttons": [{
-                    "button_name": btn.button_name,
-                    "button_type": btn.button_type
-                } for btn in self.buttons.values()],
             "robot_location": self.robot_loc,
             "hands_free": self.hands_free,
             "holding": str(self.holding) if self.holding else None

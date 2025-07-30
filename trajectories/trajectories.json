@@ -1,0 +1,344 @@
+[
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "loc1",
+                    "cup_clean": false,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": true
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc1",
+            "hands_free": true,
+            "holding": null
+        },
+        "action": "MOVE LOC2 LOC1",
+        "image": "trajectories/1753900764.735698_0.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "loc1",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc1",
+            "hands_free": true,
+            "holding": null
+        },
+        "action": "PRESS-CLEANING-BUTTON CLEAN-BTN ESP-CUP1 LOC1",
+        "image": "trajectories/1753900764.735698_1.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "hand",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc1",
+            "hands_free": false,
+            "holding": "esp-cup1"
+        },
+        "action": "PICK ESP-CUP1 LOC1",
+        "image": "trajectories/1753900764.735698_2.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "hand",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc3",
+            "hands_free": false,
+            "holding": "esp-cup1"
+        },
+        "action": "MOVE LOC1 LOC3",
+        "image": "trajectories/1753900764.735698_3.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "loc3",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc3",
+            "hands_free": true,
+            "holding": null
+        },
+        "action": "PLACE ESP-CUP1 LOC3",
+        "image": "trajectories/1753900764.735698_4.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "loc3",
+                    "cup_clean": false,
+                    "cup_empty": false,
+                    "cup_full": true,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc3",
+            "hands_free": true,
+            "holding": null
+        },
+        "action": "PRESS-BUTTON-ESPRESSO ESP-BTN ESP-CUP1 LOC3",
+        "image": "trajectories/1753900764.735698_5.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "hand",
+                    "cup_clean": false,
+                    "cup_empty": false,
+                    "cup_full": true,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc3",
+            "hands_free": false,
+            "holding": "esp-cup1"
+        },
+        "action": "PICK ESP-CUP1 LOC3",
+        "image": "trajectories/1753900764.735698_6.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "hand",
+                    "cup_clean": false,
+                    "cup_empty": false,
+                    "cup_full": true,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc4",
+            "hands_free": false,
+            "holding": "esp-cup1"
+        },
+        "action": "MOVE LOC3 LOC4",
+        "image": "trajectories/1753900764.735698_7.png"
+    },
+    {
+        "groundings": {
+            "cups": [
+                {
+                    "cup_type": "espresso-cup",
+                    "cup_name": "esp-cup1",
+                    "cup_loc": "loc4",
+                    "cup_clean": false,
+                    "cup_empty": false,
+                    "cup_full": true,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "cappuccino-cup",
+                    "cup_name": "cap-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                },
+                {
+                    "cup_type": "americano-cup",
+                    "cup_name": "amer-cup1",
+                    "cup_loc": "loc2",
+                    "cup_clean": true,
+                    "cup_empty": true,
+                    "cup_full": false,
+                    "dirty": false
+                }
+            ],
+            "robot_location": "loc4",
+            "hands_free": true,
+            "holding": null
+        },
+        "action": "PLACE ESP-CUP1 LOC4",
+        "image": "trajectories/1753900764.735698_8.png"
+    }
+]

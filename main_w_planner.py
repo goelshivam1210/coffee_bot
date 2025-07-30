@@ -40,7 +40,7 @@ for action in parsed_plan:
     # Need to save state (pddl groundings), image, and action at each timestep
     trajectories.append(Trajectory(
         groundings=env.symbolic_state.get_groundings(),
-        image=env.sim_actions.base_env.render_image(),
+        image=env.sim_actions.base_env.get_camera_image(),
         action=action
     ))
 
