@@ -17,7 +17,8 @@ def save_to_json(trajectories):
 
     data = []
     for ind, traj in enumerate(trajectories):
-        cv2.imwrite(f"trajectories/{timestamp}_{ind}.png", traj.image)
+        image_bgr = cv2.cvtColor(traj.image, cv2.COLOR_RGB2BGR)  # Convert RGB to BGR for OpenCV
+        cv2.imwrite(f"trajectories/{timestamp}_{ind}.png", image_bgr)
         traj_data = {
             "groundings": traj.groundings,
             "action": traj.action,
