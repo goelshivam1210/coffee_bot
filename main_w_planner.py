@@ -33,14 +33,22 @@ env = ActionExecutor(CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION, hands_free=True, 
 parsed_plan = plan_and_parse(problem_file=args.problem_file)
 print("parsed plan:: ", parsed_plan)
 
-trajectories = []
+image, bbs = env.sim_actions.base_env.get_camera_image()
+trajectories = [Trajectory(
+    groundings=env.symbolic_state.get_groundings(),
+    image=image,
+    bbs=bbs,
+    action="RESET"  # Initial state, no action yet
+)]
 for action in parsed_plan:
   env.execute(action)
   if args.trajectories:
+    image, bbs = env.sim_actions.base_env.get_camera_image()
     # Need to save state (pddl groundings), image, and action at each timestep
     trajectories.append(Trajectory(
         groundings=env.symbolic_state.get_groundings(),
-        image=env.sim_actions.base_env.get_camera_image(),
+        image=image,
+        bbs=bbs,
         action=action
     ))
 

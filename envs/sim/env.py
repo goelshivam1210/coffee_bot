@@ -554,15 +554,15 @@ class PickPlaceEnv:
     if self.sim_step % interval == 0 and self.render:
       self.cache_video.append(self.get_camera_image())
 
-  def get_camera_image(self):
+  def get_camera_image(self, draw_bounding_boxes=False):
     if not self.high_res:
       image_size = (240, 240)
       intrinsics = (120., 0, 120., 0, 120., 120., 0, 0, 1)
-      color, _, _, _, _ = self.render_image(image_size, intrinsics)
+      color, _, _, _, _, bbs = self.render_image(image_size, intrinsics)
     else:
-      color, _, _, _, _ = self.render_image()
-    
-    return color
+      color, _, _, _, _, bbs = self.render_image()
+
+    return color, bbs
 
 
   def render_image(self, image_size=(720, 720), intrinsics=(360., 0, 360., 0, 360., 360., 0, 0, 1)):
@@ -611,6 +611,35 @@ class PickPlaceEnv:
       color += np.int32(np.random.normal(0, 3, color.shape))
       color = np.uint8(np.clip(color, 0, 255))
 
+    segm_reshaped = np.array(segm).reshape(image_size[0], image_size[1])
+    
+    bounding_boxes = {}
+    for obj_name, obj_id in self.obj_name_to_id.items():
+        # Check if this is a cup
+        print(obj_name)
+        is_cup = 'cup' in obj_name.lower()
+
+        if is_cup:
+            # Find pixels belonging to this object
+            mask = (segm_reshaped == obj_id)
+            
+            if np.any(mask):
+                # Get coordinates of all pixels belonging to this object
+                coords = np.where(mask)
+                y_coords, x_coords = coords
+                
+                # Calculate bounding box
+                x_min, x_max = np.min(x_coords), np.max(x_coords)
+                y_min, y_max = np.min(y_coords), np.max(y_coords)
+
+                bounding_boxes[obj_name] = {
+                    'x_min': int(x_min),
+                    'x_max': int(x_max),
+                    'y_min': int(y_min),
+                    'y_max': int(y_max)
+                }
+                
+
     # Get depth image.
     depth_image_size = (image_size[0], image_size[1])
     zbuffer = np.float32(depth).reshape(depth_image_size)
@@ -620,7 +649,7 @@ class PickPlaceEnv:
       depth += np.random.normal(0, 0.003, depth.shape)
 
     intrinsics = np.float32(intrinsics).reshape(3, 3)
-    return color, depth, position, orientation, intrinsics
+    return color, depth, position, orientation, intrinsics, bounding_boxes
   
   def on_table(self, obj_a):
     """
