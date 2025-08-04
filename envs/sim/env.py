@@ -15,6 +15,10 @@ class SimActions:
     self.base_env.reset(cups, locations, buttons)
     self.move_to_location(robot_location)
 
+  def reset(self, cups, locations, buttons, robot_location):
+    self.base_env.reset(cups, locations, buttons)
+    self.move_to_location(robot_location)
+
   def pick(self, obj_to_pick):
     """Do pick and place motion primitive."""
 

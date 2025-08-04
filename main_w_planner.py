@@ -12,6 +12,8 @@ parser.add_argument('-t', '--trajectories', action='store_true',
                     help='Flag to save trajectories to JSON file.')
 parser.add_argument('-v', '--video', action='store_true',
                     help='Flag to save a video of the simulation.')
+parser.add_argument('-r', '--runs', type=int, default=1,
+                    help='Number of runs to execute the plan. Default is 1.')
 args = parser.parse_args()
 
 high_resolution = True
@@ -33,29 +35,38 @@ env = ActionExecutor(CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION, hands_free=True, 
 parsed_plan = plan_and_parse(problem_file=args.problem_file)
 print("parsed plan:: ", parsed_plan)
 
-image, bbs = env.sim_actions.base_env.get_camera_image()
-trajectories = [Trajectory(
-    groundings=env.symbolic_state.get_groundings(),
-    image=image,
-    bbs=bbs,
-    action="RESET"  # Initial state, no action yet
-)]
-for action in parsed_plan:
-  env.execute(action)
-  if args.trajectories:
+for run in range(args.runs):
+  try:
     image, bbs = env.sim_actions.base_env.get_camera_image()
-    # Need to save state (pddl groundings), image, and action at each timestep
-    trajectories.append(Trajectory(
+    trajectories = [Trajectory(
         groundings=env.symbolic_state.get_groundings(),
         image=image,
         bbs=bbs,
-        action=action
-    ))
+        action="RESET"  # Initial state, no action yet
+    )]
+    for action in parsed_plan:
+      env.execute(action)
+      if args.trajectories:
+        image, bbs = env.sim_actions.base_env.get_camera_image()
+        # Need to save state (pddl groundings), image, and action at each timestep
+        trajectories.append(Trajectory(
+            groundings=env.symbolic_state.get_groundings(),
+            image=image,
+            bbs=bbs,
+            action=action
+        ))
 
-if args.trajectories:
-  save_to_json(trajectories)
-  print("Trajectories saved to trajectories.json")      
+    if args.trajectories:
+      save_to_json(trajectories)
+      print("Trajectories saved to trajectories.json")      
 
-# Save video of simulation
-if args.video:
-  env.sim_actions.base_env.save_video("my_simulation.mp4")
+    # Save video of simulation
+    if args.video:
+      env.sim_actions.base_env.save_video("my_simulation.mp4")
+
+    
+  except ValueError as e:
+    print(f"Sim validation error in run {run}: {e}")
+  except Exception as e:
+    print(f"An error occurred in run {run}: {e}")
+  env.reset()

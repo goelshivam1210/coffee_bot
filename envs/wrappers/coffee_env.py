@@ -19,6 +19,28 @@ class ActionExecutor:
                                       high_frame_rate=high_frame_rate, 
                                       max_steps=max_steps)
         
+        # Save for reset purposes
+        self.cups = cups
+        self.locations = locations
+        self.buttons = buttons
+        self.robot_loc = robot_loc
+        self.hands_free = hands_free
+        self.render = render
+        self.high_res = high_res
+        self.high_frame_rate = high_frame_rate
+        self.max_steps = max_steps
+
+    def reset(self):
+        """Reset the environment to the initial state."""
+        self.symbolic_state = SymbolicState(self.cups,
+                                            self.locations, 
+                                            self.buttons, 
+                                            self.robot_loc, 
+                                            self.hands_free)
+        self.sim_actions.reset(self.symbolic_state.cups,
+                               self.symbolic_state.locations,
+                               self.symbolic_state.buttons,
+                               self.symbolic_state.robot_loc)
     
     def execute(self, action_string):
         print("Executing action:", action_string)
