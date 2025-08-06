@@ -72,8 +72,10 @@ coffee-bot/
 |   ├── pddl-parser/    # pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser)
 |   └── planner/
 |       └── planning_functions.py
+├── trajectories/       # Generated trajectories go here
 ├── utils/
 |   ├── logger.py
+|   ├── trajectory.py
 |   └── transform_utils.py
 ├── environment.yml
 ├── main_w_planner.py   # Plan & execute
@@ -87,21 +89,24 @@ coffee-bot/
 ## PDDL Planning
 
 - **Domain files:** stored in `pddl/domain.pddl`
-- **Problem files:** stored in `pddl/problem.pddl`
+- **Problem files:** stored in `pddl/problem.pddl` or path passed to --problem_file flag
 - **Planner interface:** `scripts/planner/planning_functions.py`. Uses the pddl-parser library (https://github.com/pucrs-automated-planning/pddl-parser).
-- **TODO:** Add command line arguments for PDDL problem file.
 
 ## Simulation Execution
 
 - **Execution script:** `main_w_planner.py`
-- **Arguments:** None
+- **Arguments:** proflem file, trajctories, video, runs
 
 Example:
 
 ```bash
-python main_w_planner.py
+python main_w_planner.py \
+  --problem_file pddl/problem.pddl \
+  --trajectories
+  --video
+  --runs 5
 ```
-Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file in the `main_w_planner.py` file. Executes generated plan in the simulation environment.
+Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file in the `main_w_planner.py` file. Executes generated plan in the simulation environment. Saves video with --video flag. Saves trajectories to trajectories/ with --trajectories flag. Runs plan multiple times with --runs number_of_runs flag.
 
 <!-- ## Usage Examples
 
@@ -110,7 +115,6 @@ Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file i
 ## Configuration
 
 - Modify environment parameters in `envs/sim/configs.py`
-- Modify PDDL problem file in `main_w_planner.py`
 - TODO: add global config file
 
 <!-- ## Logging & Visualization

@@ -19,6 +19,28 @@ class ActionExecutor:
                                       high_frame_rate=high_frame_rate, 
                                       max_steps=max_steps)
         
+        # Save for reset purposes
+        self.cups = cups
+        self.locations = locations
+        self.buttons = buttons
+        self.robot_loc = robot_loc
+        self.hands_free = hands_free
+        self.render = render
+        self.high_res = high_res
+        self.high_frame_rate = high_frame_rate
+        self.max_steps = max_steps
+
+    def reset(self):
+        """Reset the environment to the initial state."""
+        self.symbolic_state = SymbolicState(self.cups,
+                                            self.locations, 
+                                            self.buttons, 
+                                            self.robot_loc, 
+                                            self.hands_free)
+        self.sim_actions.reset(self.symbolic_state.cups,
+                               self.symbolic_state.locations,
+                               self.symbolic_state.buttons,
+                               self.symbolic_state.robot_loc)
     
     def execute(self, action_string):
         print("Executing action:", action_string)
@@ -239,4 +261,21 @@ class SymbolicState:
         # Update the base environment
         # self.baseenv.press_button(button_name)
         # self.baseenv.change_color(cup_name, "silver")  # Change cup color to indicate cleaning
-        
+
+    def get_groundings(self):
+        """Get current symbolic state in object form for JSON serialization."""
+        return {
+            "cups": [{
+                    "cup_type": cup.cup_type,
+                    "cup_name": cup.cup_name,
+                    "cup_loc": cup.cup_loc,
+                    "cup_clean": cup.cup_clean,
+                    "cup_empty": cup.cup_empty,
+                    "cup_full": cup.cup_full,
+                    "dirty": cup.dirty
+                } for cup in self.cups.values()],
+            "robot_location": self.robot_loc,
+            "hands_free": self.hands_free,
+            "holding": str(self.holding) if self.holding else None
+        }
+    
