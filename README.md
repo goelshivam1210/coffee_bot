@@ -141,7 +141,7 @@ Format of `{timestamp}` folder:
         "hands_free": true / false,
         "holding": "cup_name" / null
       },
-      "action": "PICK ..." / "MOVE ..." / "PLACE ... / " / "PRESS-BUTTON ..." / "RESET",
+      "action": "PICK ..." / "MOVE ..." / "PLACE ... " / "PRESS-BUTTON ..." / "RESET",
       "image": "trajectories/{timestamp}/#.png"
     },
     ...
