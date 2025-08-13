@@ -1,0 +1,547 @@
+[
+    {
+        "image": "trajectories/1754501376.066459/0.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 319
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 363,
+                "x_max": 401,
+                "y_min": 301,
+                "y_max": 360
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/1.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 319
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 363,
+                "x_max": 401,
+                "y_min": 301,
+                "y_max": 360
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/2.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 280,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 364,
+                "x_max": 410,
+                "y_min": 211,
+                "y_max": 284
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/3.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 355,
+                "x_max": 355,
+                "y_min": 303,
+                "y_max": 303
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 349,
+                "y_max": 385
+            },
+            "amer-cup1": {
+                "x_min": 312,
+                "x_max": 409,
+                "y_min": 366,
+                "y_max": 504
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/4.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 318,
+                "x_max": 402,
+                "y_min": 418,
+                "y_max": 539
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/5.png",
+        "bounding_boxes": {
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 317,
+                "x_max": 402,
+                "y_min": 417,
+                "y_max": 539
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/6.png",
+        "bounding_boxes": {
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 303,
+                "y_min": 351,
+                "y_max": 365
+            },
+            "amer-cup1": {
+                "x_min": 312,
+                "x_max": 410,
+                "y_min": 374,
+                "y_max": 512
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/7.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 473,
+                "x_max": 533,
+                "y_min": 199,
+                "y_max": 271
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/8.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/9.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 297,
+                "x_max": 326,
+                "y_min": 346,
+                "y_max": 387
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/10.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 282,
+                "x_max": 318,
+                "y_min": 244,
+                "y_max": 297
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/11.png",
+        "bounding_boxes": {
+            "cap-cup1": {
+                "x_min": 329,
+                "x_max": 391,
+                "y_min": 390,
+                "y_max": 480
+            },
+            "amer-cup1": {
+                "x_min": 491,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/12.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 331,
+                "x_max": 384,
+                "y_min": 452,
+                "y_max": 528
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/13.png",
+        "bounding_boxes": {
+            "cap-cup1": {
+                "x_min": 331,
+                "x_max": 384,
+                "y_min": 452,
+                "y_max": 528
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/14.png",
+        "bounding_boxes": {
+            "cap-cup1": {
+                "x_min": 327,
+                "x_max": 389,
+                "y_min": 399,
+                "y_max": 489
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/15.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 483,
+                "x_max": 522,
+                "y_min": 212,
+                "y_max": 258
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/16.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/17.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 354,
+                "x_max": 381,
+                "y_min": 279,
+                "y_max": 320
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/18.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 352,
+                "x_max": 385,
+                "y_min": 193,
+                "y_max": 241
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/19.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 321,
+                "x_max": 401,
+                "y_min": 379,
+                "y_max": 490
+            },
+            "cap-cup1": {
+                "x_min": 423,
+                "x_max": 445,
+                "y_min": 317,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 494,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/20.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 324,
+                "x_max": 391,
+                "y_min": 439,
+                "y_max": 533
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/21.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 324,
+                "x_max": 391,
+                "y_min": 439,
+                "y_max": 533
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/22.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 318,
+                "x_max": 397,
+                "y_min": 391,
+                "y_max": 500
+            },
+            "cap-cup1": {
+                "x_min": 430,
+                "x_max": 441,
+                "y_min": 330,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 490,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/23.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 479,
+                "x_max": 526,
+                "y_min": 210,
+                "y_max": 265
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501376.066459/24.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 454,
+                "x_max": 487,
+                "y_min": 280,
+                "y_max": 321
+            },
+            "cap-cup1": {
+                "x_min": 421,
+                "x_max": 447,
+                "y_min": 304,
+                "y_max": 339
+            },
+            "amer-cup1": {
+                "x_min": 488,
+                "x_max": 536,
+                "y_min": 283,
+                "y_max": 340
+            }
+        }
+    }
+]

@@ -29,7 +29,7 @@ print("Generated BUTTONS:", BUTTONS)
 print("Generated ROBOT_LOCATION:", ROBOT_LOCATION)
 
 
-env = ActionExecutor(CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION, hands_free=True, render=True, high_res=high_resolution, high_frame_rate=high_frame_rate)
+env = ActionExecutor(CUPS, LOCATIONS, BUTTONS, ROBOT_LOCATION, hands_free=True, render=False, high_res=high_resolution, high_frame_rate=high_frame_rate)
 
 
 parsed_plan = plan_and_parse(problem_file=args.problem_file)

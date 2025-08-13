@@ -15,6 +15,7 @@ The project consists of a custom reinforcement learning environment for a coffee
   - [Environment](#environment)
   - [PDDL Planning](#pddl-planning)
   - [Simulation Execution](#simulation-execution)
+  - [Trajectory Collection](#trajectory-collection)
     <!-- - [Usage Examples](#usage-examples) -->
   - [Configuration](#configuration)
     <!-- - [Logging \& Visualization](#logging--visualization) -->
@@ -111,6 +112,64 @@ Plans based on `pddl/domain.pddl` and the pddl file listed as the problem_file i
 <!-- ## Usage Examples
 
 1. TBD -->
+
+## Trajectory Collection
+
+- **Using the `--trajectories` or `-t` flag will cause the simulation to generate trajectories in the trajectories/ folder.**
+
+Format of `{timestamp}` folder:
+- trajectories.json:
+  ```json
+  [
+    ...
+    {
+      "groundings": {
+        "cups": [
+          ...
+          {
+            "cup_type": "espresso-cup" / "cappuccino-cup" / "americano-cup",
+            "cup_name": "cup_name",
+            "cup_loc": "cup_loc",
+            "cup_clean": true / false,
+            "cup_empty": true / false,
+            "cup_full": true / false,
+            "dirty": true / false
+          },
+          ...
+        ],
+        "robot_location": "robot_location",
+        "hands_free": true / false,
+        "holding": "cup_name" / null
+      },
+      "action": "PICK ..." / "MOVE ..." / "PLACE ... / " / "PRESS-BUTTON ..." / "RESET",
+      "image": "trajectories/{timestamp}/#.png"
+    },
+    ...
+  ]
+  ```
+
+- bounding_boxes.json:
+  ```json
+  [
+    ...
+    {
+      "image": "trajectories/{timestamp}/#.png",
+      "bounding_boxes": {
+        ...
+        "cup_name": {
+          "x_min": #,
+          "x_max": #,
+          "y_min": #,
+          "y_max": #
+        },
+        ...
+      }
+    },
+    ...
+  ]
+  ```
+
+- The folder also contains numbered images `0 to (actions taken - 1)`. Each image depcits the scene after an action is taken.
 
 ## Configuration
 

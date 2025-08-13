@@ -1,0 +1,202 @@
+[
+    {
+        "image": "trajectories/1754501009.30147/0.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 255,
+                "x_max": 292,
+                "y_min": 322,
+                "y_max": 370
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 303,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/1.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 255,
+                "x_max": 292,
+                "y_min": 323,
+                "y_max": 370
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 303,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/2.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 255,
+                "x_max": 292,
+                "y_min": 322,
+                "y_max": 370
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 303,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/3.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 231,
+                "x_max": 279,
+                "y_min": 227,
+                "y_max": 286
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 303,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/4.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 318,
+                "x_max": 398,
+                "y_min": 383,
+                "y_max": 493
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/5.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 324,
+                "x_max": 391,
+                "y_min": 435,
+                "y_max": 531
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 303,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/6.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 325,
+                "x_max": 392,
+                "y_min": 435,
+                "y_max": 530
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 384,
+                "y_min": 321,
+                "y_max": 338
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/7.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 319,
+                "x_max": 397,
+                "y_min": 387,
+                "y_max": 498
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/8.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 480,
+                "x_max": 525,
+                "y_min": 211,
+                "y_max": 265
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 302,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    },
+    {
+        "image": "trajectories/1754501009.30147/9.png",
+        "bounding_boxes": {
+            "esp-cup1": {
+                "x_min": 422,
+                "x_max": 454,
+                "y_min": 292,
+                "y_max": 335
+            },
+            "cap-cup1": {
+                "x_min": 380,
+                "x_max": 404,
+                "y_min": 306,
+                "y_max": 341
+            },
+            "amer-cup1": {
+                "x_min": 302,
+                "x_max": 339,
+                "y_min": 279,
+                "y_max": 333
+            }
+        }
+    }
+]
